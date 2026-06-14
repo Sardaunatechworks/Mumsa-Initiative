@@ -150,19 +150,56 @@ export default function DonatePage() {
 
                   {method === 'bank' && (
                     <div className="space-y-4 border-t border-slate-200 pt-4">
-                      <div className="bg-white p-6 rounded-lg border border-brand-border space-y-3">
-                        <p className="text-2xs text-slate-gray uppercase tracking-widest font-bold">MUMSA Institutional Account details</p>
-                        <div>
-                          <span className="text-slate-400 text-2xs block">Bank Name</span>
-                          <span className="text-xs font-bold text-navy">First Bank of Nigeria</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Local NGN Donations */}
+                        <div className="bg-white p-5 rounded-lg border border-brand-border space-y-3">
+                          <p className="text-[10px] text-secondary-600 uppercase tracking-wider font-extrabold">Donate in Nigerian Naira (NGN)</p>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Account Name</span>
+                            <span className="text-xs font-bold text-navy">MUMSA INITIATIVE LTD/GTE</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Bank Name</span>
+                            <span className="text-xs font-bold text-navy">United Bank for Africa (UBA)</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Account Number</span>
+                            <span className="text-sm font-extrabold text-primary-600">1028378245</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Currency</span>
+                            <span className="text-xs font-bold text-navy">Nigerian Naira (NGN)</span>
+                          </div>
                         </div>
-                        <div>
-                          <span className="text-slate-400 text-2xs block">Account Number</span>
-                          <span className="text-xs font-bold text-navy">2043813890 (Mock Account)</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 text-2xs block">Account Name</span>
-                          <span className="text-xs font-bold text-navy">MUMSA Initiative for Development</span>
+
+                        {/* International USD/Foreign Donations */}
+                        <div className="bg-white p-5 rounded-lg border border-brand-border space-y-3">
+                          <p className="text-[10px] text-secondary-600 uppercase tracking-wider font-extrabold">International Donations (USD, EUR, GBP, etc.)</p>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Account Name</span>
+                            <span className="text-xs font-bold text-navy">MUMSA INITIATIVE LTD/GTE</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Bank Name</span>
+                            <span className="text-xs font-bold text-navy">United Bank for Africa (UBA)</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Domiciliary Account Number</span>
+                            <span className="text-sm font-extrabold text-primary-600">3004850785</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">SWIFT/BIC Code</span>
+                            <span className="text-xs font-bold text-navy font-mono">UNAFNGLAXXX</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 text-[10px] block">Bank Head Office Address</span>
+                            <span className="text-[10px] text-slate-600 leading-relaxed block font-medium">
+                              United Bank for Africa (UBA)<br />
+                              UBA House, Floor 8<br />
+                              57 Marina, Lagos Island<br />
+                              Lagos, Nigeria
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
