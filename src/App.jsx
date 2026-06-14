@@ -37,6 +37,7 @@ import AdminPartners    from '@pages/admin/AdminPartners'
 import AdminResources   from '@pages/admin/AdminResources'
 import AdminMedia       from '@pages/admin/AdminMedia'
 import AdminNews        from '@pages/admin/AdminNews'
+import AdminSuccessStories from '@pages/admin/AdminSuccessStories'
 import AdminMessages    from '@pages/admin/AdminMessages'
 import AdminSettings    from '@pages/admin/AdminSettings'
 
@@ -87,6 +88,7 @@ export default function App() {
             <Route path="/admin/resources"      element={<AdminResources />} />
             <Route path="/admin/media"          element={<AdminMedia />} />
             <Route path="/admin/news"           element={<AdminNews />} />
+            <Route path="/admin/success-stories" element={<AdminSuccessStories />} />
             <Route path="/admin/messages"       element={<AdminMessages />} />
             <Route path="/admin/settings"       element={<AdminSettings />} />
           </Route>

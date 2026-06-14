@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, FolderOpen, BarChart3, Users,
   Handshake, BookOpen, Image, Newspaper, MessageSquare,
-  Settings, LogOut, Menu, X, ChevronRight
+  Settings, LogOut, Menu, X, ChevronRight, Award
 } from 'lucide-react'
 import { Outlet } from 'react-router-dom'
 import { useAuthStore } from '@stores/authStore'
@@ -19,6 +19,7 @@ const ADMIN_NAV = [
   { label: 'Resources',       href: '/admin/resources', icon: BookOpen },
   { label: 'Media Gallery',   href: '/admin/media',     icon: Image },
   { label: 'News & Events',   href: '/admin/news',      icon: Newspaper },
+  { label: 'Success Stories', href: '/admin/success-stories', icon: Award },
   { label: 'Messages',        href: '/admin/messages',  icon: MessageSquare },
   { label: 'Settings',        href: '/admin/settings',  icon: Settings },
 ]

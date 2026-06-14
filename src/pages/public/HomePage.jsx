@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   ArrowRight, Heart, ChevronDown, CheckCircle2,
   BookOpen, Users, MapPin, Handshake, Shield,
@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { SEOHead } from '@components/ui'
 import { SITE, PROGRAMS, EXPERTISE_AREAS, GET_INVOLVED_OPTIONS } from '@lib/content'
+import { supabase } from '@lib/supabase'
 
 // Animations
 const fadeUp = {
@@ -20,63 +21,34 @@ const fadeUp = {
 
 export default function HomePage() {
   const [activeExpertise, setActiveExpertise] = useState(0)
-  
-  const featuredProjects = [
-    {
-      title: 'Bring Back to School Campaign',
-      donor: 'Global Education Fund',
-      budget: 'NGN 18,500,000',
-      location: 'Ningi & Toro LGAs, Bauchi State',
-      duration: '12 Months',
-      outcomes: 'Reintegrated 2,400 out-of-school children, rebuilt 4 rural learning spaces, and provided education kits.',
-      image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-      title: 'Women Digital Entrepreneurship Initiative',
-      donor: 'AU Agenda 2063 Innovation Grant',
-      budget: 'NGN 12,000,000',
-      location: 'Bauchi Metropolitan',
-      duration: '8 Months',
-      outcomes: 'Trained 450 young women in digital marketing, finance, and online business setup with seed grants.',
-      image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=1200&q=80',
-    }
-  ]
+  const [featuredProjects, setFeaturedProjects] = useState([])
+  const [successStories, setSuccessStories] = useState([])
+  const [partners, setPartners] = useState([])
+  const [publications, setPublications] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const successStories = [
-    {
-      name: 'Amina Bello',
-      title: 'From Out-of-School Child to Class Representative',
-      text: '“I was out of school for two years because my family couldn’t afford the books. MUMSA gave me a uniform, bags, and support. Today I am back in school and I want to be a doctor to help other girls in my village.”',
-      location: 'Ningi Community Beneficiary',
-      image: 'https://images.unsplash.com/photo-1484863137850-59afcfe05386?auto=format&fit=crop&w=800&q=80',
-      metric: 'Back to School 2024'
+  useEffect(() => {
+    async function fetchHomeData() {
+      try {
+        const [projRes, storyRes, partRes, pubRes] = await Promise.all([
+          supabase.from('projects').select('*').eq('is_published', true).order('created_at', { ascending: false }).limit(2),
+          supabase.from('success_stories').select('*').eq('is_published', true).order('created_at', { ascending: false }).limit(1),
+          supabase.from('partners').select('*').eq('is_published', true).order('order_index', { ascending: true }).limit(8),
+          supabase.from('publications').select('*').eq('is_published', true).order('year', { ascending: false }).limit(2)
+        ])
+        
+        if (!projRes.error) setFeaturedProjects(projRes.data || [])
+        if (!storyRes.error) setSuccessStories(storyRes.data || [])
+        if (!partRes.error) setPartners(partRes.data || [])
+        if (!pubRes.error) setPublications(pubRes.data || [])
+      } catch (err) {
+        console.warn('Failed to load dynamic home data:', err)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
-
-  const partners = [
-    { name: 'UNDP', type: 'UN Agencies' },
-    { name: 'WHO', type: 'UN Agencies' },
-    { name: 'UNCCD', type: 'UN Agencies' },
-    { name: 'EU Initiatives', type: 'Foundations' },
-    { name: 'Federal Ministry of Education', type: 'Government' },
-    { name: 'Bauchi State Govt', type: 'Government' },
-    { name: 'Plan International', type: 'NGOs' },
-  ]
-
-  const publications = [
-    {
-      title: 'MUMSA Annual Impact Report 2025',
-      type: 'Annual Report',
-      desc: 'An institutional overview of social investments, program milestones, and auditing transparency.',
-      link: '/resources'
-    },
-    {
-      title: 'Youth TVET & Employability Policy Brief',
-      type: 'Policy Brief',
-      desc: 'Research-backed roadmap for addressing youth unemployment through digital TVET pathways.',
-      link: '/resources'
-    }
-  ]
+    fetchHomeData()
+  }, [])
 
   return (
     <>
@@ -388,50 +360,56 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {featuredProjects.map((project, idx) => {
-              const borderClass = idx % 2 === 0 ? 'card-green-top' : 'card-blue-top';
-              return (
-                <motion.div
-                  key={project.title}
-                  className={`card ${borderClass} flex flex-col justify-between`}
-                  {...fadeUp}
-                >
-                  <div className="h-64 overflow-hidden border-b border-brand-border">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  <div className="p-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <span className="badge badge-green mb-3">Active Project</span>
-                      <h3 className="text-sm font-bold text-navy mb-3">{project.title}</h3>
-                      
-                      <div className="grid grid-cols-2 gap-3 mb-4 text-2xs">
-                        <div className="bg-slate-50 p-2.5 rounded border border-brand-border">
-                          <p className="text-[10px] text-slate-400 uppercase tracking-wider">Donor / Sponsor</p>
-                          <p className="text-xs font-bold text-navy mt-0.5">{project.donor}</p>
-                        </div>
-                        <div className="bg-slate-50 p-2.5 rounded border border-brand-border">
-                          <p className="text-[10px] text-slate-400 uppercase tracking-wider">Location</p>
-                          <p className="text-xs font-bold text-navy mt-0.5 truncate">{project.location}</p>
-                        </div>
-                      </div>
-
-                      <p className="text-xs text-slate-gray mb-4 leading-relaxed">
-                        {project.outcomes}
-                      </p>
+            {featuredProjects.length === 0 ? (
+              <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200 col-span-full">
+                <p className="text-slate-500 font-medium text-sm">No featured projects available at the moment.</p>
+              </div>
+            ) : (
+              featuredProjects.map((project, idx) => {
+                const borderClass = idx % 2 === 0 ? 'card-green-top' : 'card-blue-top';
+                return (
+                  <motion.div
+                    key={project.id || project.title}
+                    className={`card ${borderClass} flex flex-col justify-between`}
+                    {...fadeUp}
+                  >
+                    <div className="h-64 overflow-hidden border-b border-brand-border">
+                      <img
+                        src={project.cover_url || project.image_url || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80'}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    
-                    <Link to="/projects" className="btn btn-secondary btn-sm w-full flex items-center justify-center gap-1.5 mt-auto">
-                      View Project Details <ArrowRight className="w-4 h-4 text-white" />
-                    </Link>
-                  </div>
-                </motion.div>
-              )
-            })}
+
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <span className="badge badge-green mb-3">Active Project</span>
+                        <h3 className="text-sm font-bold text-navy mb-3">{project.title}</h3>
+                        
+                        <div className="grid grid-cols-2 gap-3 mb-4 text-2xs">
+                          <div className="bg-slate-50 p-2.5 rounded border border-brand-border">
+                            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Donor / Sponsor</p>
+                            <p className="text-xs font-bold text-navy mt-0.5">{project.donor || 'MUMSA Partners'}</p>
+                          </div>
+                          <div className="bg-slate-50 p-2.5 rounded border border-brand-border">
+                            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Location</p>
+                            <p className="text-xs font-bold text-navy mt-0.5 truncate">{project.location || 'Bauchi State'}</p>
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-slate-gray mb-4 leading-relaxed line-clamp-3">
+                          {project.outcomes || project.description}
+                        </p>
+                      </div>
+                      
+                      <Link to="/projects" className="btn btn-secondary btn-sm w-full flex items-center justify-center gap-1.5 mt-auto">
+                        View Project Details <ArrowRight className="w-4 h-4 text-white" />
+                      </Link>
+                    </div>
+                  </motion.div>
+                )
+              })
+            )}
           </div>
         </div>
       </section>
@@ -444,33 +422,39 @@ export default function HomePage() {
             <h2 className="text-h2">Human-Centered Stories</h2>
           </div>
 
-          {successStories.map((story) => (
-            <motion.div
-              key={story.name}
-              className="card card-green-top p-8 lg:p-12 shadow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
-              {...fadeUp}
-            >
-              <div className="lg:col-span-4">
-                <div className="w-full h-72 rounded overflow-hidden border border-brand-border">
-                  <img
-                    src={story.image}
-                    alt={story.name}
-                    className="w-full h-full object-cover"
-                  />
+          {successStories.length === 0 ? (
+            <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200 max-w-2xl mx-auto">
+              <p className="text-slate-500 font-medium text-sm">No success stories available at the moment.</p>
+            </div>
+          ) : (
+            successStories.map((story) => (
+              <motion.div
+                key={story.id || story.name || story.title}
+                className="card card-green-top p-8 lg:p-12 shadow-card grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+                {...fadeUp}
+              >
+                <div className="lg:col-span-4">
+                  <div className="w-full h-72 rounded overflow-hidden border border-brand-border bg-white flex items-center justify-center">
+                    <img
+                      src={story.image_url || 'https://images.unsplash.com/photo-1484863137850-59afcfe05386?auto=format&fit=crop&w=800&q=80'}
+                      alt={story.title || story.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="lg:col-span-8">
-                <span className="badge badge-blue mb-4">{story.metric}</span>
-                <blockquote className="text-h3 text-navy font-bold italic leading-relaxed mb-6">
-                  {story.text}
-                </blockquote>
-                <div>
-                  <p className="font-extrabold text-navy text-sm">{story.name}</p>
-                  <p className="text-xs text-slate-gray mt-0.5">{story.location}</p>
+                <div className="lg:col-span-8">
+                  <span className="badge badge-blue mb-4">{story.metrics || 'Impact Story'}</span>
+                  <blockquote className="text-h3 text-navy font-bold italic leading-relaxed mb-6">
+                    {story.content || story.text}
+                  </blockquote>
+                  <div>
+                    <p className="font-extrabold text-navy text-sm">{story.author || story.name || 'Beneficiary'}</p>
+                    <p className="text-xs text-slate-gray mt-0.5">{story.category || 'MUMSA Beneficiary'}</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))
+          )}
         </div>
       </section>
 
@@ -485,19 +469,31 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 items-center">
-            {partners.map((partner) => (
-              <motion.div
-                key={partner.name}
-                className="bg-slate-50 p-6 rounded border border-brand-border text-center hover:bg-white transition-colors"
-                {...fadeUp}
-              >
-                <p className="text-xs font-bold text-navy">{partner.name}</p>
-                <span className="inline-block mt-2 px-2 py-0.5 rounded bg-slate-200/50 text-[10px] text-slate-gray font-semibold uppercase tracking-wider">
-                  {partner.type}
-                </span>
-              </motion.div>
-            ))}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-6 items-center">
+            {partners.length === 0 ? (
+              <div className="text-center py-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 col-span-full">
+                <p className="text-slate-500 font-medium text-xs">No partner logos published at the moment.</p>
+              </div>
+            ) : (
+              partners.map((partner) => (
+                <motion.div
+                  key={partner.id || partner.name}
+                  className="bg-slate-50 p-4 rounded border border-brand-border h-24 flex items-center justify-center hover:bg-white hover:border-slate-400 transition-colors"
+                  {...fadeUp}
+                >
+                  {partner.logo_url ? (
+                    <img src={partner.logo_url} alt={partner.name} className="max-h-full max-w-full object-contain" />
+                  ) : (
+                    <div className="text-center">
+                      <p className="text-xs font-bold text-navy truncate max-w-[100px]">{partner.name}</p>
+                      <span className="inline-block mt-1 px-1.5 py-0.5 rounded bg-slate-200/50 text-[9px] text-slate-gray font-semibold uppercase tracking-wider">
+                        {partner.category || 'Partner'}
+                      </span>
+                    </div>
+                  )}
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -516,27 +512,39 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {publications.map((pub, idx) => {
-              const borderClass = idx % 2 === 0 ? 'card-blue-top' : 'card-black-top';
-              return (
-                <motion.div
-                  key={pub.title}
-                  className={`card ${borderClass} p-6 flex flex-col justify-between h-full`}
-                  {...fadeUp}
-                >
-                  <div>
-                    <span className="badge badge-blue mb-3">{pub.type}</span>
-                    <h3 className="text-sm font-bold text-navy mb-2">{pub.title}</h3>
-                    <p className="text-xs text-slate-gray leading-relaxed mb-4">
-                      {pub.desc}
-                    </p>
-                  </div>
-                  <Link to={pub.link} className="text-xs font-bold text-secondary-600 hover:underline flex items-center gap-1 mt-auto">
-                    Download Document (PDF) <FileText className="w-4 h-4 text-primary-500" />
-                  </Link>
-                </motion.div>
-              )
-            })}
+            {publications.length === 0 ? (
+              <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200 col-span-full">
+                <p className="text-slate-500 font-medium text-sm">No publications available at the moment.</p>
+              </div>
+            ) : (
+              publications.map((pub, idx) => {
+                const borderClass = idx % 2 === 0 ? 'card-blue-top' : 'card-black-top';
+                return (
+                  <motion.div
+                    key={pub.id || pub.title}
+                    className={`card ${borderClass} p-6 flex flex-col justify-between h-full`}
+                    {...fadeUp}
+                  >
+                    <div>
+                      <span className="badge badge-blue mb-3">{pub.type}</span>
+                      <h3 className="text-sm font-bold text-navy mb-2">{pub.title}</h3>
+                      <p className="text-xs text-slate-gray leading-relaxed mb-4 line-clamp-3">
+                        {pub.description || pub.desc}
+                      </p>
+                    </div>
+                    {pub.file_url ? (
+                      <a href={pub.file_url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-secondary-600 hover:underline flex items-center gap-1 mt-auto">
+                        Download Document (PDF) <FileText className="w-4 h-4 text-primary-500" />
+                      </a>
+                    ) : (
+                      <Link to="/resources" className="text-xs font-bold text-secondary-600 hover:underline flex items-center gap-1 mt-auto">
+                        View Resources <FileText className="w-4 h-4 text-primary-500" />
+                      </Link>
+                    )}
+                  </motion.div>
+                )
+              })
+            )}
           </div>
         </div>
       </section>

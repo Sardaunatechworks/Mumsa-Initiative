@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -6,8 +7,8 @@ import {
   Activity, Star
 } from 'lucide-react'
 import { SEOHead, PageHero } from '@components/ui'
-import { IMPACT_STATS } from '@lib/content'
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts'
+import { supabase } from '@lib/supabase'
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
@@ -32,28 +33,51 @@ const sectorData = [
   { name: 'Climate & Other', value: 5, color: '#94A3B8' },
 ]
 
-const CASE_STUDIES = [
-  {
-    title: 'Bring Back to School Initiative — Bauchi State',
-    category: 'Education & Skills',
-    result: 'Over 5,000 out-of-school children re-enrolled in primary education',
-    description: 'A targeted community mobilization campaign combined with direct school support materials reached thousands of children who had dropped out of the formal education system.',
-  },
-  {
-    title: 'Youth Employability and Entrepreneurship Program',
-    category: 'Youth Empowerment',
-    result: '3,500+ youth and women trained; 60% secured employment or started businesses',
-    description: 'Market-relevant vocational and entrepreneurship training delivered through the Fellow Learner Fellowship Programme (FLFP), equipping young people with the skills and tools for economic independence.',
-  },
-  {
-    title: 'Community Health Outreach — Rural Communities',
-    category: 'Health & Wellbeing',
-    result: '10,000+ community members accessed free medical services',
-    description: 'Multi-day medical outreach programs delivered primary care, maternal health services, hearing screening, and health education to underserved rural communities.',
-  },
-]
-
 export default function ImpactPage() {
+  const [stats, setStats] = useState([])
+  const [caseStudies, setCaseStudies] = useState([])
+  const [reports, setReports] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [statsRes, csRes, reportsRes] = await Promise.all([
+          supabase
+            .from('impact_stats')
+            .select('*')
+            .order('order_index', { ascending: true }),
+          supabase
+            .from('success_stories')
+            .select('*')
+            .eq('is_published', true)
+            .order('order_index', { ascending: true })
+            .order('created_at', { ascending: false }),
+          supabase
+            .from('publications')
+            .select('*')
+            .eq('is_published', true)
+            .order('year', { ascending: false })
+        ])
+
+        if (statsRes.data) setStats(statsRes.data)
+        if (csRes.data) setCaseStudies(csRes.data)
+        if (reportsRes.data) {
+          // Filter publications to display only reports/audits
+          const filteredReports = reportsRes.data.filter(pub =>
+            ['Annual Report', 'Financial Report', 'Research Report', 'Policy Brief'].includes(pub.type)
+          )
+          setReports(filteredReports)
+        }
+      } catch (err) {
+        console.warn('Error loading impact data:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
   return (
     <>
       <SEOHead
@@ -79,20 +103,29 @@ export default function ImpactPage() {
             <h2 className="text-h2">MUMSA Initiative Numbers</h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {IMPACT_STATS.map((stat) => (
-              <motion.div
-                key={stat.id}
-                className="bg-slate-50 p-6 rounded-xl border border-brand-border text-center shadow-card"
-                {...fadeUp}
-              >
-                <span className="text-3xl font-extrabold text-secondary-600 block mb-1">
-                  {stat.value.toLocaleString()}{stat.suffix}
-                </span>
-                <span className="text-xs font-bold text-navy tracking-tight leading-snug">{stat.label}</span>
-              </motion.div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <span className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : stats.length === 0 ? (
+            <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200 max-w-xl mx-auto">
+              <p className="text-slate-500 font-medium text-sm">No impact statistics available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+              {stats.map((stat) => (
+                <div
+                  key={stat.id}
+                  className="bg-slate-50 p-6 rounded-xl border border-brand-border text-center shadow-card"
+                >
+                  <span className="text-3xl font-extrabold text-secondary-600 block mb-1">
+                    {stat.value ? stat.value.toLocaleString() : '0'}{stat.suffix || ''}
+                  </span>
+                  <span className="text-xs font-bold text-navy tracking-tight leading-snug">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -106,7 +139,7 @@ export default function ImpactPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Chart 1: Growth */}
-            <motion.div className="lg:col-span-7 bg-white p-6 rounded-xl border border-brand-border shadow-card" {...fadeUp}>
+            <div className="lg:col-span-7 bg-white p-6 rounded-xl border border-brand-border shadow-card">
               <h3 className="text-xs font-bold text-navy uppercase tracking-wider mb-6 flex items-center gap-1.5">
                 <TrendingUp className="w-4 h-4 text-primary-500" /> Beneficiary Growth Trajectory
               </h3>
@@ -127,10 +160,10 @@ export default function ImpactPage() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-            </motion.div>
+            </div>
 
             {/* Chart 2: Sector Share */}
-            <motion.div className="lg:col-span-5 bg-white p-6 rounded-xl border border-brand-border shadow-card flex flex-col justify-between" {...fadeUp}>
+            <div className="lg:col-span-5 bg-white p-6 rounded-xl border border-brand-border shadow-card flex flex-col justify-between">
               <div>
                 <h3 className="text-xs font-bold text-navy uppercase tracking-wider mb-6 flex items-center gap-1.5">
                   <Activity className="w-4 h-4 text-primary-500" /> Program Resource Share (%)
@@ -168,7 +201,7 @@ export default function ImpactPage() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -181,24 +214,35 @@ export default function ImpactPage() {
             <h2 className="text-h2">Outcome Case Studies</h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {CASE_STUDIES.map((cs) => (
-              <motion.div
-                key={cs.title}
-                className="bg-slate-50 p-6 rounded-xl border border-brand-border shadow-card flex flex-col justify-between"
-                {...fadeUp}
-              >
-                <div>
-                  <span className="badge badge-green mb-3">{cs.category}</span>
-                  <h3 className="text-sm font-bold text-navy mb-2 leading-snug">{cs.title}</h3>
-                  <div className="bg-white p-2.5 rounded-lg border border-brand-border mb-3">
-                    <p className="text-[11px] font-bold text-secondary-700">{cs.result}</p>
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <span className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : caseStudies.length === 0 ? (
+            <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200 max-w-xl mx-auto">
+              <p className="text-slate-500 font-medium text-sm">No case studies available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {caseStudies.map((cs) => (
+                <div
+                  key={cs.id}
+                  className="bg-slate-50 p-6 rounded-xl border border-brand-border shadow-card flex flex-col justify-between"
+                >
+                  <div>
+                    {cs.category && <span className="badge badge-green mb-3">{cs.category}</span>}
+                    <h3 className="text-sm font-bold text-navy mb-2 leading-snug">{cs.title}</h3>
+                    {cs.metrics && (
+                      <div className="bg-white p-2.5 rounded-lg border border-brand-border mb-3">
+                        <p className="text-[11px] font-bold text-secondary-700">{cs.metrics}</p>
+                      </div>
+                    )}
+                    <p className="text-xs text-slate-gray leading-relaxed">{cs.content}</p>
                   </div>
-                  <p className="text-xs text-slate-gray leading-relaxed">{cs.description}</p>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -248,28 +292,43 @@ export default function ImpactPage() {
             <h2 className="text-h2">Annual Reports & Audits</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { title: 'Annual Impact Report 2025', type: 'Annual Report', size: '2.4 MB' },
-              { title: 'Monitoring & Evaluation Report 2024', type: 'M&E Report', size: '1.8 MB' },
-              { title: 'Audited Financial Statements 2024', type: 'Financial Audit', size: '1.2 MB' },
-            ].map((report) => (
-              <motion.div
-                key={report.title}
-                className="bg-slate-50 p-6 rounded-xl border border-brand-border shadow-card flex flex-col justify-between"
-                {...fadeUp}
-              >
-                <div>
-                  <span className="badge badge-blue mb-4">{report.type}</span>
-                  <h3 className="text-xs font-bold text-navy mb-2">{report.title}</h3>
-                  <p className="text-2xs text-slate-gray">File Size: {report.size}</p>
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <span className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : reports.length === 0 ? (
+            <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200 max-w-xl mx-auto">
+              <p className="text-slate-500 font-medium text-sm">No annual reports or financial audits available at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {reports.map((report) => (
+                <div
+                  key={report.id}
+                  className="bg-slate-50 p-6 rounded-xl border border-brand-border shadow-card flex flex-col justify-between"
+                >
+                  <div>
+                    <span className="badge badge-blue mb-4">{report.type}</span>
+                    <h3 className="text-xs font-bold text-navy mb-2">{report.title}</h3>
+                    {report.description && <p className="text-2xs text-slate-500 mb-2 leading-relaxed">{report.description}</p>}
+                    <p className="text-2xs text-slate-gray">Year: {report.year || 'N/A'}</p>
+                  </div>
+                  {report.file_url ? (
+                    <a
+                      href={report.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-secondary btn-sm mt-6 flex items-center gap-1 justify-center"
+                    >
+                      <Download className="w-4 h-4" /> Download PDF
+                    </a>
+                  ) : (
+                    <span className="text-2xs text-slate-400 italic mt-6 text-center">No PDF attachment</span>
+                  )}
                 </div>
-                <Link to="/resources" className="btn btn-secondary btn-sm mt-6 flex items-center gap-1 justify-center">
-                  <Download className="w-4 h-4" /> Download PDF
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

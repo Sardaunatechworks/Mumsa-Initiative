@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Users, Award, UserCheck, Heart } from 'lucide-react'
 import { SEOHead, SectionHeader, PageHero } from '@components/ui'
-import { LEADERSHIP_TEAM, BOARD_MEMBERS, STAFF_MEMBERS, VOLUNTEER_ROLES, BOARD_COMMITTEES, ADVISORY_AREAS } from '@lib/content'
+import { VOLUNTEER_ROLES, BOARD_COMMITTEES, ADVISORY_AREAS } from '@lib/content'
 import { cn } from '@lib/utils'
+import { supabase } from '@lib/supabase'
 
 function PersonCard({ name, role, bio, size = 'default' }) {
   return (
@@ -26,6 +28,34 @@ function PersonCard({ name, role, bio, size = 'default' }) {
 }
 
 export default function TeamPage() {
+  const [team, setTeam] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchTeam() {
+      try {
+        const { data, error } = await supabase
+          .from('team_members')
+          .select('*')
+          .eq('is_published', true)
+          .order('order_index', { ascending: true })
+        
+        if (!error && data) {
+          setTeam(data)
+        }
+      } catch (err) {
+        console.warn('Failed to fetch team members:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchTeam()
+  }, [])
+
+  const leadership = team.filter((m) => m.category === 'leadership')
+  const board      = team.filter((m) => m.category === 'board')
+  const staff      = team.filter((m) => m.category === 'staff')
+
   return (
     <>
       <SEOHead
@@ -58,19 +88,28 @@ export default function TeamPage() {
             subtitle="Our senior leadership brings together diverse expertise to guide MUMSA Initiative's strategy, programs, and partnerships."
             className="mb-12"
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {LEADERSHIP_TEAM.map((person, i) => (
-              <motion.div
-                key={person.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.07 }}
-              >
-                <PersonCard {...person} size="large" />
-              </motion.div>
-            ))}
-          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-10"><span className="w-8 h-8 border-3 border-primary-600 border-t-transparent rounded-full animate-spin" /></div>
+          ) : leadership.length === 0 ? (
+            <div className="text-center py-10 bg-slate-100/50 rounded-2xl border border-dashed border-slate-200 max-w-2xl mx-auto shadow-sm">
+              <p className="text-slate-500 font-medium text-sm">No leadership members listed at this time.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {leadership.map((person, i) => (
+                <motion.div
+                  key={person.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                >
+                  <PersonCard name={person.name} role={person.role} bio={person.bio} size="large" />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -83,19 +122,28 @@ export default function TeamPage() {
             subtitle="The Board of Trustees serves as the highest governing body of MUMSA Initiative, providing strategic leadership, policy direction, fiduciary oversight, and accountability."
             className="mb-12"
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
-            {BOARD_MEMBERS.map((member, i) => (
-              <motion.div
-                key={member.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.07 }}
-              >
-                <PersonCard {...member} />
-              </motion.div>
-            ))}
-          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-10"><span className="w-8 h-8 border-3 border-primary-600 border-t-transparent rounded-full animate-spin" /></div>
+          ) : board.length === 0 ? (
+            <div className="text-center py-10 bg-slate-100/50 rounded-2xl border border-dashed border-slate-200 max-w-2xl mx-auto shadow-sm mb-10">
+              <p className="text-slate-500 font-medium text-sm">No board members listed at this time.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+              {board.map((member, i) => (
+                <motion.div
+                  key={member.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                >
+                  <PersonCard name={member.name} role={member.role} bio={member.bio} />
+                </motion.div>
+              ))}
+            </div>
+          )}
 
           {/* Board committees */}
           <div className="bg-secondary-900 rounded-2xl p-8 text-white">
@@ -151,24 +199,33 @@ export default function TeamPage() {
             subtitle="Our multidisciplinary staff team combines expertise, innovation, and commitment to deliver high-quality programs and services across our focus areas."
             className="mb-12"
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {STAFF_MEMBERS.map((member, i) => (
-              <motion.div
-                key={member.id}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="card p-5 text-center"
-              >
-                <div className="w-12 h-12 rounded-xl bg-gradient-primary text-white font-bold mx-auto mb-3 flex items-center justify-center">
-                  {member.name.split(' ').slice(-1)[0][0]}
-                </div>
-                <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
-                <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
-              </motion.div>
-            ))}
-          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-10"><span className="w-8 h-8 border-3 border-primary-600 border-t-transparent rounded-full animate-spin" /></div>
+          ) : staff.length === 0 ? (
+            <div className="text-center py-10 bg-slate-100/50 rounded-2xl border border-dashed border-slate-200 max-w-2xl mx-auto shadow-sm">
+              <p className="text-slate-500 font-medium text-sm">No staff members listed at this time.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {staff.map((member, i) => (
+                <motion.div
+                  key={member.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  className="card p-5 text-center"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-primary text-white font-bold mx-auto mb-3 flex items-center justify-center">
+                    {member.name.split(' ').slice(-1)[0][0]}
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
+                  <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
+                </motion.div>
+              ))}
+            </div>
+          )}
           <p className="text-sm text-slate-400 text-center mt-8 italic">
             Together with our technical consultants and specialists, our team works tirelessly to design, implement, monitor, and scale impactful solutions.
           </p>
@@ -197,12 +254,7 @@ export default function TeamPage() {
             <div>
               <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider mb-5">Our Volunteers & Fellows</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[
-                  'Community Mobilizers', 'Youth Mentors', 'Health Volunteers',
-                  'Climate Action Champions', 'Education Ambassadors',
-                  'Digital Literacy Facilitators', 'Research and Data Volunteers',
-                  'Advocacy and Campaign Volunteers',
-                ].map((role) => (
+                {VOLUNTEER_ROLES.map((role) => (
                   <div key={role} className="flex items-center gap-2.5 p-3 bg-white rounded-xl border border-slate-100 text-sm text-slate-700">
                     <Heart className="w-4 h-4 text-primary-500 flex-shrink-0" />
                     {role}

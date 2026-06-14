@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { Users, FolderOpen, FileText, BarChart3, MessageSquare, Image, Newspaper, ArrowRight } from 'lucide-react'
+import { Users, FolderOpen, FileText, BarChart3, MessageSquare, Image, Newspaper, ArrowRight, Award } from 'lucide-react'
 import { supabase } from '@lib/supabase'
 import { IMPACT_STATS } from '@lib/content'
 
@@ -9,7 +9,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const fetchCounts = async () => {
-      const tables = ['programs', 'projects', 'team_members', 'partners', 'news', 'contacts']
+      const tables = ['programs', 'projects', 'team_members', 'partners', 'news', 'contacts', 'success_stories', 'gallery']
       const results = await Promise.all(
         tables.map((t) =>
           supabase.from(t).select('id', { count: 'exact', head: true }).then(({ count }) => [t, count ?? 0])
@@ -21,21 +21,23 @@ export default function AdminDashboard() {
   }, [])
 
   const STAT_CARDS = [
-    { label: 'Programs',      value: counts.programs      ?? '—', icon: FolderOpen,     href: '/admin/programs',      border: 'card-blue-top',  iconColor: 'text-secondary-600' },
-    { label: 'Projects',      value: counts.projects      ?? '—', icon: FileText,       href: '/admin/projects',      border: 'card-green-top', iconColor: 'text-primary-600' },
-    { label: 'Team Members',  value: counts.team_members  ?? '—', icon: Users,          href: '/admin/team',          border: 'card-black-top', iconColor: 'text-navy' },
-    { label: 'Partners',      value: counts.partners      ?? '—', icon: BarChart3,      href: '/admin/partners',      border: 'card-blue-top',  iconColor: 'text-secondary-600' },
-    { label: 'News Articles', value: counts.news          ?? '—', icon: Newspaper,      href: '/admin/news',          border: 'card-green-top', iconColor: 'text-primary-600' },
-    { label: 'Messages',      value: counts.contacts      ?? '—', icon: MessageSquare,  href: '/admin/messages',      border: 'card-black-top', iconColor: 'text-navy' },
+    { label: 'Programs',        value: counts.programs        ?? '—', icon: FolderOpen,     href: '/admin/programs',        border: 'card-blue-top',  iconColor: 'text-secondary-600' },
+    { label: 'Projects',        value: counts.projects        ?? '—', icon: FileText,       href: '/admin/projects',        border: 'card-green-top', iconColor: 'text-primary-600' },
+    { label: 'Team Members',    value: counts.team_members    ?? '—', icon: Users,          href: '/admin/team',            border: 'card-black-top', iconColor: 'text-navy' },
+    { label: 'Partners',        value: counts.partners        ?? '—', icon: BarChart3,      href: '/admin/partners',        border: 'card-blue-top',  iconColor: 'text-secondary-600' },
+    { label: 'News Articles',   value: counts.news            ?? '—', icon: Newspaper,      href: '/admin/news',            border: 'card-green-top', iconColor: 'text-primary-600' },
+    { label: 'Success Stories',  value: counts.success_stories ?? '—', icon: Award,          href: '/admin/success-stories', border: 'card-blue-top',  iconColor: 'text-secondary-600' },
+    { label: 'Gallery Items',   value: counts.gallery         ?? '—', icon: Image,          href: '/admin/media',           border: 'card-green-top', iconColor: 'text-primary-600' },
+    { label: 'Messages',        value: counts.contacts        ?? '—', icon: MessageSquare,  href: '/admin/messages',        border: 'card-black-top', iconColor: 'text-navy' },
   ]
 
   const QUICK_LINKS = [
-    { label: 'Add Program',     href: '/admin/programs',  icon: FolderOpen,     border: 'card-blue-top',  iconBg: 'bg-secondary-50',  iconColor: 'text-secondary-600' },
-    { label: 'Add Project',     href: '/admin/projects',  icon: FileText,       border: 'card-green-top', iconBg: 'bg-primary-50',    iconColor: 'text-primary-600' },
-    { label: 'Add Team Member',  href: '/admin/team',      icon: Users,          border: 'card-black-top', iconBg: 'bg-slate-100',      iconColor: 'text-navy' },
-    { label: 'View Messages',   href: '/admin/messages',  icon: MessageSquare,  border: 'card-blue-top',  iconBg: 'bg-secondary-50',  iconColor: 'text-secondary-600' },
-    { label: 'Upload Media',    href: '/admin/media',     icon: Image,          border: 'card-green-top', iconBg: 'bg-primary-50',    iconColor: 'text-primary-600' },
-    { label: 'Add News',        href: '/admin/news',      icon: Newspaper,      border: 'card-black-top', iconBg: 'bg-slate-100',      iconColor: 'text-navy' },
+    { label: 'Add Program',     href: '/admin/programs',        icon: FolderOpen,     border: 'card-blue-top',  iconBg: 'bg-secondary-50',  iconColor: 'text-secondary-600' },
+    { label: 'Add Project',     href: '/admin/projects',        icon: FileText,       border: 'card-green-top', iconBg: 'bg-primary-50',    iconColor: 'text-primary-600' },
+    { label: 'Add Team Member',  href: '/admin/team',            icon: Users,          border: 'card-black-top', iconBg: 'bg-slate-100',      iconColor: 'text-navy' },
+    { label: 'Add Success Story', href: '/admin/success-stories', icon: Award,          border: 'card-blue-top',  iconBg: 'bg-secondary-50',  iconColor: 'text-secondary-600' },
+    { label: 'Upload Gallery',  href: '/admin/media',           icon: Image,          border: 'card-green-top', iconBg: 'bg-primary-50',    iconColor: 'text-primary-600' },
+    { label: 'Add News',        href: '/admin/news',            icon: Newspaper,      border: 'card-black-top', iconBg: 'bg-slate-100',      iconColor: 'text-navy' },
   ]
 
   return (
@@ -48,7 +50,7 @@ export default function AdminDashboard() {
       {/* CMS Stats */}
       <div>
         <h2 className="text-base font-bold text-slate-800 mb-4">CMS Content Overview</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {STAT_CARDS.map(({ label, value, icon: Icon, href, border, iconColor }) => (
             <Link
               key={label}

@@ -15,47 +15,10 @@ const fadeUp = {
   transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
 }
 
-// Fallback high-fidelity projects matching client schema
-const FALLBACK_PROJECTS = [
-  {
-    id: 'campaign-1',
-    title: 'Bring Back to School Campaign',
-    donor: 'Global Education Fund & Private Trustees',
-    budget: 'NGN 18,500,000',
-    duration: '12 Months',
-    location: 'Ningi & Toro LGAs, Bauchi State',
-    cover_url: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=80',
-    objectives: 'Reintegrate out-of-school children, particularly Almajiri children and girls, into structured primary learning systems.',
-    activities: 'Conducted door-to-door community census; provided uniforms, writing materials, and bags; set up temporary bridge learning sites; organized teacher training workshops.',
-    results: 'Successfully enrolled 2,400 out-of-school kids; trained 42 local educators; created 8 community education advisory panels.',
-    testimonial: '“I was out of school for two years because my family couldn’t afford the books. MUMSA gave me a uniform, bags, and support. Today I am back in school and I want to be a doctor.” — Amina Bello, Ningi Community Beneficiary',
-    gallery: [
-      'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=800&q=80'
-    ]
-  },
-  {
-    id: 'campaign-2',
-    title: 'Women Digital Entrepreneurship Initiative',
-    donor: 'AU Agenda 2063 Innovation Grant',
-    budget: 'NGN 12,000,000',
-    duration: '8 months',
-    location: 'Bauchi Metropolitan Area',
-    cover_url: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=1200&q=80',
-    objectives: 'Equip young women with digital tools, business setup methodologies, and financial inclusion channels to support sustainable livelihoods.',
-    activities: 'Set up digital training hubs; organized 12-week sessions on e-commerce, digital advertising, and book-keeping; distributed micro seed grants to graduates.',
-    results: 'Trained 450 women; enabled registration of 120 small-scale digital businesses; established group credit structures.',
-    testimonial: '“The digital marketing course allowed me to double my craft sales online. I now support my family.” — Halima Yusuf, Graduate & Craft Shop Owner',
-    gallery: [
-      'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80'
-    ]
-  }
-]
-
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState(FALLBACK_PROJECTS)
+  const [projects, setProjects] = useState([])
   const [selectedProject, setSelectedProject] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchProjects() {
@@ -65,12 +28,13 @@ export default function ProjectsPage() {
           .select('*')
           .eq('is_published', true)
         
-        if (!error && data && data.length > 0) {
-          // Parse string list back to bullets if needed or replace
+        if (!error && data) {
           setProjects(data)
         }
       } catch (err) {
-        console.warn('Supabase projects fetch failed, using fallback high-fidelity data.', err)
+        console.warn('Supabase projects fetch failed:', err)
+      } finally {
+        setLoading(false)
       }
     }
     fetchProjects()
@@ -101,74 +65,84 @@ export default function ProjectsPage() {
             <h2 className="text-h2">Active & Completed Projects</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {projects.map((project) => (
-              <motion.div
-                key={project.id}
-                className="bg-slate-50 rounded-xl overflow-hidden border border-brand-border shadow-card flex flex-col justify-between"
-                {...fadeUp}
-              >
-                <div className="h-64 overflow-hidden relative border-b border-brand-border">
-                  <img
-                    src={project.cover_url || project.image_url || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=800&q=80'}
-                    alt={project.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4 bg-navy/80 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded">
-                    {project.duration}
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <span className="w-10 h-10 border-4 border-primary-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-200 max-w-xl mx-auto shadow-sm">
+              <p className="text-slate-500 font-medium text-sm">No projects published at the moment.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {projects.map((project) => (
+                <motion.div
+                  key={project.id}
+                  className="bg-slate-50 rounded-xl overflow-hidden border border-brand-border shadow-card flex flex-col justify-between"
+                  {...fadeUp}
+                >
+                  <div className="h-64 overflow-hidden relative border-b border-brand-border">
+                    <img
+                      src={project.cover_url || project.image_url || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=800&q=80'}
+                      alt={project.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-4 right-4 bg-navy/80 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded">
+                      {project.duration || 'Ongoing'}
+                    </div>
                   </div>
-                </div>
 
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-h4 text-navy mb-3">{project.title}</h3>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-primary-500 flex-shrink-0" />
-                        <div>
-                          <p className="text-[10px] text-slate-400 uppercase tracking-wider">Donor</p>
-                          <p className="text-xs font-bold text-navy truncate max-w-[150px]">{project.donor || 'MUMSA Partners'}</p>
+                  <div className="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-h4 text-navy mb-3">{project.title}</h3>
+                      
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="flex items-center gap-2">
+                          <User className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Donor</p>
+                            <p className="text-xs font-bold text-navy truncate max-w-[150px]">{project.donor || 'MUMSA Partners'}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Budget</p>
+                            <p className="text-xs font-bold text-navy">{project.budget || 'NGN --'}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Location</p>
+                            <p className="text-xs font-bold text-navy truncate max-w-[150px]">{project.location || 'Bauchi State'}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                          <div>
+                            <p className="text-[10px] text-slate-400 uppercase tracking-wider">Status</p>
+                            <p className="text-xs font-bold text-navy">{project.status || 'Active'}</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <DollarSign className="w-4 h-4 text-primary-500 flex-shrink-0" />
-                        <div>
-                          <p className="text-[10px] text-slate-400 uppercase tracking-wider">Budget</p>
-                          <p className="text-xs font-bold text-navy">{project.budget || 'NGN --'}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-primary-500 flex-shrink-0" />
-                        <div>
-                          <p className="text-[10px] text-slate-400 uppercase tracking-wider">Location</p>
-                          <p className="text-xs font-bold text-navy truncate max-w-[150px]">{project.location || 'Bauchi State'}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-primary-500 flex-shrink-0" />
-                        <div>
-                          <p className="text-[10px] text-slate-400 uppercase tracking-wider">Status</p>
-                          <p className="text-xs font-bold text-navy">Active</p>
-                        </div>
-                      </div>
+
+                      <p className="text-xs text-slate-gray mb-4 leading-relaxed line-clamp-3">
+                        {project.objectives || project.description}
+                      </p>
                     </div>
 
-                    <p className="text-xs text-slate-gray mb-4 leading-relaxed line-clamp-3">
-                      {project.objectives || project.description}
-                    </p>
+                    <button
+                      onClick={() => setSelectedProject(project)}
+                      className="btn btn-secondary btn-sm w-full flex items-center justify-center gap-1.5"
+                    >
+                      View Project Details <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => setSelectedProject(project)}
-                    className="btn btn-secondary btn-sm w-full flex items-center justify-center gap-1.5"
-                  >
-                    View Project Details <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
