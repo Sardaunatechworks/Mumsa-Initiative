@@ -25,22 +25,25 @@ export default function HomePage() {
   const [successStories, setSuccessStories] = useState([])
   const [partners, setPartners] = useState([])
   const [publications, setPublications] = useState([])
+  const [focusAreas, setFocusAreas] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchHomeData() {
       try {
-        const [projRes, storyRes, partRes, pubRes] = await Promise.all([
+        const [projRes, storyRes, partRes, pubRes, focusRes] = await Promise.all([
           supabase.from('projects').select('*').eq('is_published', true).order('created_at', { ascending: false }).limit(2),
           supabase.from('success_stories').select('*').eq('is_published', true).order('created_at', { ascending: false }).limit(1),
           supabase.from('partners').select('*').eq('is_published', true).order('order_index', { ascending: true }).limit(8),
-          supabase.from('publications').select('*').eq('is_published', true).order('year', { ascending: false }).limit(2)
+          supabase.from('publications').select('*').eq('is_published', true).order('year', { ascending: false }).limit(2),
+          supabase.from('focus_areas').select('*').eq('is_published', true).order('order_index', { ascending: true })
         ])
 
         if (!projRes.error) setFeaturedProjects(projRes.data || [])
         if (!storyRes.error) setSuccessStories(storyRes.data || [])
         if (!partRes.error) setPartners(partRes.data || [])
         if (!pubRes.error) setPublications(pubRes.data || [])
+        if (!focusRes.error) setFocusAreas(focusRes.data || [])
       } catch (err) {
         console.warn('Failed to load dynamic home data:', err)
       } finally {
@@ -189,52 +192,60 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: 'Women',
-                desc: 'Unlocking economic independence, leadership potential, and access to financial systems for mothers and young girls.',
-                image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=600&q=80',
-                border: 'card-green-top'
-              },
-              {
-                title: 'Youth',
-                desc: 'Equipping young minds with technical, vocational, digital, and entrepreneurship capabilities to tackle unemployment.',
-                image: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80',
-                border: 'card-blue-top'
-              },
-              {
-                title: 'Children',
-                desc: 'Supporting basic education access, nutritional support, and safety guidelines for vulnerable and out-of-school kids.',
-                image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=600&q=80',
-                border: 'card-black-top'
-              },
-              {
-                title: 'Underserved Communities',
-                desc: 'Strengthening health systems, environmental climate resilience, and infrastructure inside marginalized rural areas.',
-                image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80',
-                border: 'card-green-top'
-              }
-            ].map((target) => (
-              <motion.div
-                key={target.title}
-                className={`card ${target.border} overflow-hidden flex flex-col`}
-                {...fadeUp}
-              >
-                <div className="h-48 overflow-hidden border-b border-brand-border">
-                  <img
-                    src={target.image}
-                    alt={target.title}
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                  />
-                </div>
-                <div className="p-6 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-sm font-bold text-navy mb-2">{target.title}</h3>
-                    <p className="text-xs text-slate-gray leading-relaxed">{target.desc}</p>
+            {focusAreas.length === 0 && !loading ? (
+              <div className="col-span-full text-center py-10 bg-slate-50 border border-dashed border-slate-200 rounded-xl">
+                <p className="text-sm text-slate-500 font-medium">No focus areas listed at this time.</p>
+              </div>
+            ) : (
+              (focusAreas.length > 0 ? focusAreas : [
+                {
+                  title: 'Women',
+                  description: 'Unlocking economic independence, leadership potential, and access to financial systems for mothers and young girls.',
+                  image_url: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=600&q=80',
+                  border: 'card-green-top'
+                },
+                {
+                  title: 'Youth',
+                  description: 'Equipping young minds with technical, vocational, digital, and entrepreneurship capabilities to tackle unemployment.',
+                  image_url: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=600&q=80',
+                  border: 'card-blue-top'
+                },
+                {
+                  title: 'Children',
+                  description: 'Supporting basic education access, nutritional support, and safety guidelines for vulnerable and out-of-school kids.',
+                  image_url: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=600&q=80',
+                  border: 'card-black-top'
+                },
+                {
+                  title: 'Underserved Communities',
+                  description: 'Strengthening health systems, environmental climate resilience, and infrastructure inside marginalized rural areas.',
+                  image_url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80',
+                  border: 'card-green-top'
+                }
+              ]).map((target) => (
+                <motion.div
+                  key={target.title}
+                  className={`card ${target.border || 'card-green-top'} overflow-hidden flex flex-col`}
+                  {...fadeUp}
+                >
+                  <div className="h-48 overflow-hidden border-b border-brand-border bg-slate-50">
+                    {target.image_url && (
+                      <img
+                        src={target.image_url}
+                        alt={target.title}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                    )}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold text-navy mb-2">{target.title}</h3>
+                      <p className="text-xs text-slate-gray leading-relaxed">{target.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </section>

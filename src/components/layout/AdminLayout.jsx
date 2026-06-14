@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, FileText, FolderOpen, BarChart3, Users,
   Handshake, BookOpen, Image, Newspaper, MessageSquare,
-  Settings, LogOut, Menu, X, ChevronRight, Award
+  Settings, LogOut, Menu, X, ChevronRight, Award, Target
 } from 'lucide-react'
 import { Outlet } from 'react-router-dom'
 import { useAuthStore } from '@stores/authStore'
@@ -13,6 +13,7 @@ const ADMIN_NAV = [
   { label: 'Dashboard',       href: '/admin/dashboard', icon: LayoutDashboard },
   { label: 'Programs',        href: '/admin/programs',  icon: FolderOpen },
   { label: 'Projects',        href: '/admin/projects',  icon: FileText },
+  { label: 'Focus Areas',     href: '/admin/focus',     icon: Target },
   { label: 'Impact Stats',    href: '/admin/impact',    icon: BarChart3 },
   { label: 'Team',            href: '/admin/team',      icon: Users },
   { label: 'Partners',        href: '/admin/partners',  icon: Handshake },

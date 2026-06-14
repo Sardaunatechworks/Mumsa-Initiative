@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { Users, FolderOpen, FileText, BarChart3, MessageSquare, Image, Newspaper, ArrowRight, Award } from 'lucide-react'
+import { Users, FolderOpen, FileText, BarChart3, MessageSquare, Image, Newspaper, ArrowRight, Award, Target } from 'lucide-react'
 import { supabase } from '@lib/supabase'
 import { IMPACT_STATS } from '@lib/content'
 
@@ -9,7 +9,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const fetchCounts = async () => {
-      const tables = ['programs', 'projects', 'team_members', 'partners', 'news', 'contacts', 'success_stories', 'gallery']
+      const tables = ['programs', 'projects', 'team_members', 'partners', 'news', 'contacts', 'success_stories', 'gallery', 'focus_areas']
       const results = await Promise.all(
         tables.map((t) =>
           supabase.from(t).select('id', { count: 'exact', head: true }).then(({ count }) => [t, count ?? 0])
@@ -23,6 +23,7 @@ export default function AdminDashboard() {
   const STAT_CARDS = [
     { label: 'Programs',        value: counts.programs        ?? '—', icon: FolderOpen,     href: '/admin/programs',        border: 'card-blue-top',  iconColor: 'text-secondary-600' },
     { label: 'Projects',        value: counts.projects        ?? '—', icon: FileText,       href: '/admin/projects',        border: 'card-green-top', iconColor: 'text-primary-600' },
+    { label: 'Focus Areas',     value: counts.focus_areas     ?? '—', icon: Target,         href: '/admin/focus',           border: 'card-blue-top',  iconColor: 'text-secondary-600' },
     { label: 'Team Members',    value: counts.team_members    ?? '—', icon: Users,          href: '/admin/team',            border: 'card-black-top', iconColor: 'text-navy' },
     { label: 'Partners',        value: counts.partners        ?? '—', icon: BarChart3,      href: '/admin/partners',        border: 'card-blue-top',  iconColor: 'text-secondary-600' },
     { label: 'News Articles',   value: counts.news            ?? '—', icon: Newspaper,      href: '/admin/news',            border: 'card-green-top', iconColor: 'text-primary-600' },
@@ -34,6 +35,7 @@ export default function AdminDashboard() {
   const QUICK_LINKS = [
     { label: 'Add Program',     href: '/admin/programs',        icon: FolderOpen,     border: 'card-blue-top',  iconBg: 'bg-secondary-50',  iconColor: 'text-secondary-600' },
     { label: 'Add Project',     href: '/admin/projects',        icon: FileText,       border: 'card-green-top', iconBg: 'bg-primary-50',    iconColor: 'text-primary-600' },
+    { label: 'Add Focus Area',  href: '/admin/focus',           icon: Target,         border: 'card-blue-top',  iconBg: 'bg-secondary-50',  iconColor: 'text-secondary-600' },
     { label: 'Add Team Member',  href: '/admin/team',            icon: Users,          border: 'card-black-top', iconBg: 'bg-slate-100',      iconColor: 'text-navy' },
     { label: 'Add Success Story', href: '/admin/success-stories', icon: Award,          border: 'card-blue-top',  iconBg: 'bg-secondary-50',  iconColor: 'text-secondary-600' },
     { label: 'Upload Gallery',  href: '/admin/media',           icon: Image,          border: 'card-green-top', iconBg: 'bg-primary-50',    iconColor: 'text-primary-600' },
@@ -42,6 +44,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
+      {/* Title */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
         <p className="text-slate-500 text-sm mt-1">Welcome back. Here's an overview of MUMSA Initiative's content and CMS controls.</p>
@@ -50,7 +53,7 @@ export default function AdminDashboard() {
       {/* CMS Stats */}
       <div>
         <h2 className="text-base font-bold text-slate-800 mb-4">CMS Content Overview</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-4">
           {STAT_CARDS.map(({ label, value, icon: Icon, href, border, iconColor }) => (
             <Link
               key={label}
@@ -68,7 +71,7 @@ export default function AdminDashboard() {
       {/* Quick actions */}
       <div>
         <h2 className="text-base font-bold text-slate-800 mb-4">Quick Management Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           {QUICK_LINKS.map(({ label, href, icon: Icon, border, iconBg, iconColor }) => (
             <Link
               key={label}

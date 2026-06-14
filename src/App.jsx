@@ -40,6 +40,7 @@ import AdminNews        from '@pages/admin/AdminNews'
 import AdminSuccessStories from '@pages/admin/AdminSuccessStories'
 import AdminMessages    from '@pages/admin/AdminMessages'
 import AdminSettings    from '@pages/admin/AdminSettings'
+import AdminFocus       from '@pages/admin/AdminFocus'
 
 export default function App() {
   const initialize = useAuthStore((s) => s.initialize)
@@ -88,6 +89,7 @@ export default function App() {
             <Route path="/admin/media"          element={<AdminMedia />} />
             <Route path="/admin/news"           element={<AdminNews />} />
             <Route path="/admin/success-stories" element={<AdminSuccessStories />} />
+            <Route path="/admin/focus"          element={<AdminFocus />} />
             <Route path="/admin/messages"       element={<AdminMessages />} />
             <Route path="/admin/settings"       element={<AdminSettings />} />
           </Route>
