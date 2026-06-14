@@ -519,6 +519,7 @@ export const NAV_LINKS = [
       { label: 'Theory of Change', href: '/about#theory' },
       { label: 'Strategic Goals', href: '/about#goals' },
       { label: 'Areas of Expertise', href: '/about#expertise' },
+      { label: 'Our Team', href: '/team' },
     ],
   },
   { label: 'Programs', href: '/programs' },
