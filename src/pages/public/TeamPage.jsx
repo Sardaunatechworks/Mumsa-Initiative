@@ -7,14 +7,34 @@ import { VOLUNTEER_ROLES, BOARD_COMMITTEES, ADVISORY_AREAS } from '@lib/content'
 import { cn } from '@lib/utils'
 import { supabase } from '@lib/supabase'
 
-function PersonCard({ name, role, bio, size = 'default' }) {
+function MemberAvatar({ name, photoUrl, className, sizeClass = 'w-14 h-14 text-lg' }) {
+  const [imgError, setImgError] = useState(false)
+  const lastNameInitial = name ? name.split(' ').slice(-1)[0][0] : 'M'
+
+  if (photoUrl && !imgError) {
+    return (
+      <img
+        src={photoUrl}
+        alt={name}
+        onError={() => setImgError(true)}
+        className={cn("rounded-2xl object-cover flex-shrink-0 shadow-md border border-slate-100", sizeClass, className)}
+      />
+    )
+  }
+
+  return (
+    <div className={cn("rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md", sizeClass, className)}>
+      {lastNameInitial}
+    </div>
+  )
+}
+
+function PersonCard({ name, role, bio, photoUrl, size = 'default' }) {
   return (
     <div className={cn('card p-6 flex flex-col gap-4 h-full', size === 'large' && 'p-8')}>
       {/* Avatar */}
       <div className="flex items-start gap-4">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-primary flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-md">
-          {name.split(' ').slice(-1)[0][0]}
-        </div>
+        <MemberAvatar name={name} photoUrl={photoUrl} sizeClass="w-14 h-14 text-lg" />
         <div>
           <h3 className={cn('font-bold text-slate-900 leading-tight', size === 'large' ? 'text-lg' : 'text-base')}>
             {name}
@@ -107,7 +127,7 @@ export default function TeamPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.07 }}
                 >
-                  <PersonCard name={person.name} role={person.role} bio={person.bio} size="large" />
+                  <PersonCard name={person.name} role={person.role} bio={person.bio} photoUrl={person.photo_url} size="large" />
                 </motion.div>
               ))}
             </div>
@@ -141,7 +161,7 @@ export default function TeamPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.07 }}
                 >
-                  <PersonCard name={member.name} role={member.role} bio={member.bio} />
+                  <PersonCard name={member.name} role={member.role} bio={member.bio} photoUrl={member.photo_url} />
                 </motion.div>
               ))}
             </div>
@@ -200,7 +220,7 @@ export default function TeamPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.07 }}
                 >
-                  <PersonCard name={member.name} role={member.role} bio={member.bio} />
+                  <PersonCard name={member.name} role={member.role} bio={member.bio} photoUrl={member.photo_url} />
                 </motion.div>
               ))}
             </div>
@@ -233,13 +253,14 @@ export default function TeamPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="card p-5 text-center"
+                  className="card p-5 text-center flex flex-col items-center justify-between h-full"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-primary text-white font-bold mx-auto mb-3 flex items-center justify-center">
-                    {member.name.split(' ').slice(-1)[0][0]}
+                  <div className="flex flex-col items-center w-full">
+                    <MemberAvatar name={member.name} photoUrl={member.photo_url} sizeClass="w-12 h-12 text-sm" className="mb-3 mx-auto" />
+                    <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
+                    <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
+                    {member.bio && <p className="text-[11px] text-slate-500 mt-2 line-clamp-3 leading-relaxed">{member.bio}</p>}
                   </div>
-                  <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
-                  <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
                 </motion.div>
               ))}
             </div>
@@ -291,14 +312,14 @@ export default function TeamPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="card p-5 text-center"
+                  className="card p-5 text-center flex flex-col items-center justify-between h-full"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-primary text-white font-bold mx-auto mb-3 flex items-center justify-center">
-                    {member.name.split(' ').slice(-1)[0][0]}
+                  <div className="flex flex-col items-center w-full">
+                    <MemberAvatar name={member.name} photoUrl={member.photo_url} sizeClass="w-12 h-12 text-sm" className="mb-3 mx-auto" />
+                    <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
+                    <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
+                    {member.bio && <p className="text-[11px] text-slate-500 mt-2 line-clamp-3 leading-relaxed">{member.bio}</p>}
                   </div>
-                  <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
-                  <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
-                  {member.bio && <p className="text-[11px] text-slate-500 mt-2 line-clamp-3">{member.bio}</p>}
                 </motion.div>
               ))}
             </div>
