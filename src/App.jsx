@@ -69,7 +69,6 @@ export default function App() {
           <Route path="/contact"       element={<ContactPage />} />
           <Route path="/team"          element={<TeamPage />} />
           <Route path="/transparency"  element={<TransparencyPage />} />
-          <Route path="*"              element={<NotFoundPage />} />
         </Route>
 
         {/* Admin auth */}
@@ -93,6 +92,9 @@ export default function App() {
             <Route path="/admin/settings"       element={<AdminSettings />} />
           </Route>
         </Route>
+
+        {/* Wildcard 404 */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   )
