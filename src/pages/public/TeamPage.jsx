@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Users, Award, UserCheck, Heart } from 'lucide-react'
+import { Users, Award, UserCheck, Heart, X } from 'lucide-react'
 import { SEOHead, SectionHeader, PageHero } from '@components/ui'
 import { VOLUNTEER_ROLES, BOARD_COMMITTEES, ADVISORY_AREAS } from '@lib/content'
 import { cn } from '@lib/utils'
@@ -29,20 +29,66 @@ function MemberAvatar({ name, photoUrl, className, sizeClass = 'w-14 h-14 text-l
   )
 }
 
-function PersonCard({ name, role, bio, photoUrl, size = 'default' }) {
+function PersonCard({ member, onViewBio, isStaffOrVolunteer = false }) {
+  const { name, role, bio, photo_url } = member;
+
+  if (isStaffOrVolunteer) {
+    return (
+      <div className="card group overflow-hidden flex flex-col justify-between h-full hover:shadow-lg transition-all duration-300 border border-slate-100 bg-white">
+        <div className="p-5 flex flex-col items-center text-center">
+          <MemberAvatar 
+            name={name} 
+            photoUrl={photo_url} 
+            sizeClass="w-20 h-20 text-xl" 
+            className="mb-3 mx-auto group-hover:scale-105 transition-transform duration-300 object-cover" 
+          />
+          <h3 className="font-bold text-slate-900 text-sm leading-tight">{name}</h3>
+          <p className="text-2xs text-slate-500 mt-1 font-semibold leading-snug">{role}</p>
+        </div>
+        {bio && (
+          <div className="p-3 bg-slate-50 border-t border-slate-100 text-center">
+            <button 
+              onClick={() => onViewBio(member)} 
+              className="text-[11px] font-bold text-primary-600 hover:text-primary-700 hover:underline cursor-pointer"
+            >
+              View Biography
+            </button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
-    <div className={cn('card p-6 flex flex-col gap-4 h-full', size === 'large' && 'p-8')}>
-      {/* Avatar */}
-      <div className="flex items-start gap-4">
-        <MemberAvatar name={name} photoUrl={photoUrl} sizeClass="w-14 h-14 text-lg" />
-        <div>
-          <h3 className={cn('font-bold text-slate-900 leading-tight', size === 'large' ? 'text-lg' : 'text-base')}>
+    <div className="card group overflow-hidden flex flex-col justify-between h-full hover:shadow-xl transition-all duration-300 border border-slate-100 bg-white">
+      <div>
+        <div className="relative h-64 w-full bg-slate-100 overflow-hidden">
+          <MemberAvatar 
+            name={name} 
+            photoUrl={photo_url} 
+            sizeClass="w-full h-full text-5xl" 
+            className="rounded-none object-cover group-hover:scale-105 transition-transform duration-500" 
+          />
+        </div>
+        <div className="p-5 text-left">
+          <h3 className="font-bold text-slate-900 text-base leading-tight group-hover:text-primary-600 transition-colors">
             {name}
           </h3>
-          <p className="text-xs font-semibold text-primary-600 mt-0.5 leading-snug">{role}</p>
+          <p className="text-xs font-semibold text-primary-600 mt-1.5 leading-snug">
+            {role}
+          </p>
         </div>
       </div>
-      {bio && <p className="text-sm text-slate-500 leading-relaxed flex-1">{bio}</p>}
+      {bio && (
+        <div className="p-4 bg-slate-50 border-t border-slate-100">
+          <button 
+            onClick={() => onViewBio(member)} 
+            className="w-full py-2 bg-white hover:bg-primary-600 hover:text-white text-primary-600 border border-primary-100 hover:border-primary-600 rounded-lg text-xs font-bold text-center flex items-center justify-center gap-1 cursor-pointer transition-all shadow-sm"
+          >
+            View Biography
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -50,6 +96,18 @@ function PersonCard({ name, role, bio, photoUrl, size = 'default' }) {
 export default function TeamPage() {
   const [team, setTeam] = useState([])
   const [loading, setLoading] = useState(true)
+  const [selectedMember, setSelectedMember] = useState(null)
+
+  useEffect(() => {
+    if (selectedMember) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [selectedMember])
 
   useEffect(() => {
     async function fetchTeam() {
@@ -127,7 +185,7 @@ export default function TeamPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.07 }}
                 >
-                  <PersonCard name={person.name} role={person.role} bio={person.bio} photoUrl={person.photo_url} size="large" />
+                  <PersonCard member={person} onViewBio={setSelectedMember} />
                 </motion.div>
               ))}
             </div>
@@ -161,7 +219,7 @@ export default function TeamPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.07 }}
                 >
-                  <PersonCard name={member.name} role={member.role} bio={member.bio} photoUrl={member.photo_url} />
+                  <PersonCard member={member} onViewBio={setSelectedMember} />
                 </motion.div>
               ))}
             </div>
@@ -220,7 +278,7 @@ export default function TeamPage() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: i * 0.07 }}
                 >
-                  <PersonCard name={member.name} role={member.role} bio={member.bio} photoUrl={member.photo_url} />
+                  <PersonCard member={member} onViewBio={setSelectedMember} />
                 </motion.div>
               ))}
             </div>
@@ -253,14 +311,8 @@ export default function TeamPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="card p-5 text-center flex flex-col items-center justify-between h-full"
                 >
-                  <div className="flex flex-col items-center w-full">
-                    <MemberAvatar name={member.name} photoUrl={member.photo_url} sizeClass="w-12 h-12 text-sm" className="mb-3 mx-auto" />
-                    <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
-                    <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
-                    {member.bio && <p className="text-[11px] text-slate-500 mt-2 line-clamp-3 leading-relaxed">{member.bio}</p>}
-                  </div>
+                  <PersonCard member={member} onViewBio={setSelectedMember} isStaffOrVolunteer={true} />
                 </motion.div>
               ))}
             </div>
@@ -312,14 +364,8 @@ export default function TeamPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="card p-5 text-center flex flex-col items-center justify-between h-full"
                 >
-                  <div className="flex flex-col items-center w-full">
-                    <MemberAvatar name={member.name} photoUrl={member.photo_url} sizeClass="w-12 h-12 text-sm" className="mb-3 mx-auto" />
-                    <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
-                    <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
-                    {member.bio && <p className="text-[11px] text-slate-500 mt-2 line-clamp-3 leading-relaxed">{member.bio}</p>}
-                  </div>
+                  <PersonCard member={member} onViewBio={setSelectedMember} isStaffOrVolunteer={true} />
                 </motion.div>
               ))}
             </div>
@@ -340,6 +386,94 @@ export default function TeamPage() {
           </div>
         </div>
       </section>
+
+      {/* Bio Modal Overlay */}
+      {selectedMember && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+          onClick={() => setSelectedMember(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full overflow-hidden border border-slate-100 flex flex-col md:flex-row"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button 
+              onClick={() => setSelectedMember(null)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/95 hover:bg-slate-100 text-slate-500 hover:text-navy transition-all shadow-md cursor-pointer border border-slate-100"
+              aria-label="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Left Column: Bold & Big Profile Pic */}
+            <div className="w-full md:w-2/5 bg-slate-50 relative min-h-[320px] md:min-h-[450px]">
+              <MemberAvatar 
+                name={selectedMember.name} 
+                photoUrl={selectedMember.photo_url} 
+                sizeClass="w-full h-full text-7xl"
+                className="rounded-none object-cover absolute inset-0"
+              />
+            </div>
+
+            {/* Right Column: Bio details */}
+            <div className="w-full md:w-3/5 p-8 flex flex-col justify-between max-h-[85vh] md:max-h-[500px] overflow-y-auto">
+              <div className="space-y-6">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-primary-600 font-extrabold bg-primary-50 px-2.5 py-1 rounded-full">
+                    {selectedMember.category === 'leadership' ? 'Leadership Team' :
+                     selectedMember.category === 'board' ? 'Board of Trustees' :
+                     selectedMember.category === 'advisory' ? 'Advisory Board' :
+                     selectedMember.category === 'staff' ? 'Staff' : 'Volunteer'}
+                  </span>
+                  <h2 className="text-2xl font-black text-navy mt-3 leading-tight">{selectedMember.name}</h2>
+                  <p className="text-sm font-semibold text-slate-500 mt-1 leading-snug">{selectedMember.role}</p>
+                </div>
+
+                <div className="border-t border-slate-100 pt-6">
+                  <h4 className="text-2xs font-extrabold uppercase text-slate-400 tracking-wider mb-2">Biography</h4>
+                  <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line font-medium">
+                    {selectedMember.bio}
+                  </p>
+                </div>
+              </div>
+
+              {/* Social links / footer inside modal */}
+              {(selectedMember.linkedin_url || selectedMember.twitter_url) && (
+                <div className="border-t border-slate-100 pt-6 mt-8 flex items-center gap-3">
+                  <span className="text-2xs font-extrabold uppercase text-slate-400 tracking-wider">Connect:</span>
+                  {selectedMember.linkedin_url && (
+                    <a 
+                      href={selectedMember.linkedin_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-xs font-semibold text-primary-600 hover:underline inline-flex items-center gap-1"
+                    >
+                      LinkedIn ↗
+                    </a>
+                  )}
+                  {selectedMember.twitter_url && (
+                    <a 
+                      href={selectedMember.twitter_url} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-xs font-semibold text-primary-600 hover:underline inline-flex items-center gap-1"
+                    >
+                      Twitter ↗
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
     </>
   )
 }
