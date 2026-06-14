@@ -36,7 +36,7 @@ export default function HomePage() {
           supabase.from('partners').select('*').eq('is_published', true).order('order_index', { ascending: true }).limit(8),
           supabase.from('publications').select('*').eq('is_published', true).order('year', { ascending: false }).limit(2)
         ])
-        
+
         if (!projRes.error) setFeaturedProjects(projRes.data || [])
         if (!storyRes.error) setSuccessStories(storyRes.data || [])
         if (!partRes.error) setPartners(partRes.data || [])
@@ -76,8 +76,7 @@ export default function HomePage() {
               transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-brand-border text-xs font-semibold uppercase tracking-wider text-secondary-600 mb-6"
             >
-              <Sparkles className="w-3.5 h-3.5 text-secondary-600" />
-              Youth-Led Development Agency · Founded 2020
+              Youth-led Nonprofit Organization Founded in 2020
             </motion.div>
 
             <motion.h1
@@ -250,22 +249,20 @@ export default function HomePage() {
               <p className="text-body-large text-slate-gray my-6">
                 Our multi-sectoral expertise enables MUMSA Initiative to design systems-level solutions, delivering measurable outcomes across Northern Nigeria.
               </p>
-              
+
               <div className="space-y-3">
                 {EXPERTISE_AREAS.slice(0, 5).map((exp, idx) => (
                   <button
                     key={exp.title}
                     onClick={() => setActiveExpertise(idx)}
-                    className={`w-full text-left p-4 rounded border transition-all flex items-center justify-between group ${
-                      activeExpertise === idx
+                    className={`w-full text-left p-4 rounded border transition-all flex items-center justify-between group ${activeExpertise === idx
                         ? 'bg-secondary-50 border-secondary-600 text-secondary-600 font-bold'
                         : 'bg-white border-brand-border text-slate-gray hover:bg-slate-50 hover:border-black'
-                    }`}
+                      }`}
                   >
                     <span className="text-sm font-semibold">{exp.title}</span>
-                    <ChevronRight className={`w-4 h-4 transition-transform ${
-                      activeExpertise === idx ? 'translate-x-1' : 'group-hover:translate-x-0.5'
-                    }`} />
+                    <ChevronRight className={`w-4 h-4 transition-transform ${activeExpertise === idx ? 'translate-x-1' : 'group-hover:translate-x-0.5'
+                      }`} />
                   </button>
                 ))}
               </div>
@@ -324,7 +321,7 @@ export default function HomePage() {
                       {prog.description}
                     </p>
                   </div>
-                  
+
                   <div className="border-t border-brand-border pt-4 mt-4">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Sub-Programs</p>
                     <ul className="space-y-1.5 mb-4">
@@ -385,7 +382,7 @@ export default function HomePage() {
                       <div>
                         <span className="badge badge-green mb-3">Active Project</span>
                         <h3 className="text-sm font-bold text-navy mb-3">{project.title}</h3>
-                        
+
                         <div className="grid grid-cols-2 gap-3 mb-4 text-2xs">
                           <div className="bg-slate-50 p-2.5 rounded border border-brand-border">
                             <p className="text-[10px] text-slate-400 uppercase tracking-wider">Donor / Sponsor</p>
@@ -401,7 +398,7 @@ export default function HomePage() {
                           {project.outcomes || project.description}
                         </p>
                       </div>
-                      
+
                       <Link to="/projects" className="btn btn-secondary btn-sm w-full flex items-center justify-center gap-1.5 mt-auto">
                         View Project Details <ArrowRight className="w-4 h-4 text-white" />
                       </Link>

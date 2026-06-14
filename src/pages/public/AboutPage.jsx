@@ -21,7 +21,7 @@ export default function AboutPage() {
       <PageHero
         label="Institutional Profile"
         title="Building Inclusive Communities Through Innovation, Opportunity, and Sustainable Development"
-        subtitle="MUMSA Initiative is a youth-led nonprofit organization founded in 2020 to empower women, youth, children, and underserved communities through inclusive education, skills development, healthcare, climate action, and digital innovation."
+        subtitle="MUMSA Initiative is a youth-led nonprofit organization founded in 2020 to empower women, youth, children, and underserved communities through inclusive education, technical and vocational skills development, healthcare, climate action, digital innovation, and social protection. We design and implement community-driven solutions that address local challenges while contributing to national development priorities, the Sustainable Development Goals (SDGs), the African Union Agenda 2063, and other global development frameworks."
         breadcrumb={[
           { label: 'Home', href: '/' },
           { label: 'About Us' }
@@ -36,11 +36,11 @@ export default function AboutPage() {
               <div className="section-label mb-3">Our History</div>
               <h2 className="text-h2 mb-6">From Grassroots Action to National Impact</h2>
               <p className="text-body-large text-slate-gray mb-6 leading-relaxed">
-                MUMSA Initiative was established by passionate young leaders who recognized the persistent barriers preventing women, children, and young people from accessing quality education, healthcare, economic opportunities, and sustainable livelihoods.
+                MUMSA Initiative was established by passionate young leaders who recognized the persistent barriers preventing women, children, and young people from accessing quality education, healthcare, economic opportunities, and sustainable livelihoods. <br /> <b r />
+                What began as a community-driven effort to support vulnerable populations has evolved into a growing nonprofit organization implementing innovative programs across education, youth employment, health, climate action, digital literacy, and women’s empowerment. <br /> <br />
+                Through strategic partnerships and community ownership, we have reached over 35,000 beneficiaries, supported 23,000 children to access education, trained thousands of youth and women in employability and entrepreneurship skills, and contributed to national and global conversations on climate action, health, and sustainable development.
               </p>
-              <p className="text-small text-slate-gray mb-8">
-                What began as a community-driven effort to support vulnerable populations has evolved into a growing nonprofit organization implementing innovative programs across education, youth employment, health, climate action, digital literacy, and women's empowerment.
-              </p>
+
             </motion.div>
 
             {/* Vertical timeline */}
@@ -162,7 +162,8 @@ export default function AboutPage() {
             </div>
             <h2 className="text-h2 text-white">Empowering People. Strengthening Systems.</h2>
             <p className="text-body-large text-slate-300 mt-4">
-              Our intervention logical framework is designed to move target populations from exclusion to resilience and self-reliance.
+              "We believe that when women, youth, children, and vulnerable populations gain access to quality education, healthcare, skills development, economic opportunities, and supportive systems, they become empowered to improve their lives and contribute to sustainable community development."
+
             </p>
           </div>
 

@@ -54,7 +54,9 @@ export default function TeamPage() {
 
   const leadership = team.filter((m) => m.category === 'leadership')
   const board      = team.filter((m) => m.category === 'board')
+  const advisory   = team.filter((m) => m.category === 'advisory')
   const staff      = team.filter((m) => m.category === 'staff')
+  const volunteers = team.filter((m) => m.category === 'volunteer')
 
   return (
     <>
@@ -163,7 +165,7 @@ export default function TeamPage() {
       {/* ===== ADVISORY BOARD ===== */}
       <section id="advisory" className="section bg-primary-50" aria-label="Advisory board">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
             <div>
               <SectionHeader
                 label="Advisory Board"
@@ -187,6 +189,22 @@ export default function TeamPage() {
               </div>
             </div>
           </div>
+
+          {advisory.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+              {advisory.map((member, i) => (
+                <motion.div
+                  key={member.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07 }}
+                >
+                  <PersonCard name={member.name} role={member.role} bio={member.bio} />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -263,6 +281,28 @@ export default function TeamPage() {
               </div>
             </div>
           </div>
+
+          {volunteers.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mt-12">
+              {volunteers.map((member, i) => (
+                <motion.div
+                  key={member.id}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
+                  className="card p-5 text-center"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-primary text-white font-bold mx-auto mb-3 flex items-center justify-center">
+                    {member.name.split(' ').slice(-1)[0][0]}
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-sm">{member.name}</h3>
+                  <p className="text-xs text-primary-600 mt-1 leading-snug">{member.role}</p>
+                  {member.bio && <p className="text-[11px] text-slate-500 mt-2 line-clamp-3">{member.bio}</p>}
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
