@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import {
-  Heart, Users, Building, Star, CheckCircle2,
-  ShieldAlert, CreditCard, Landmark, PhoneCall, Gift
-} from 'lucide-react'
+import { Landmark, Globe, Users, Copy, Check } from 'lucide-react'
 import { SEOHead, PageHero } from '@components/ui'
 
 const fadeUp = {
@@ -14,31 +11,12 @@ const fadeUp = {
 }
 
 export default function DonatePage() {
-  const [method, setMethod] = useState('card') // card, bank, transfer
-  const [selectedAmt, setSelectedAmt] = useState(25000)
-  const [customAmt, setCustomAmt] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [copiedText, setCopiedText] = useState('')
 
-  const presetAmounts = [5000, 10000, 25000, 50000, 100000]
-
-  const handlePresetSelect = (amt) => {
-    setSelectedAmt(amt)
-    setCustomAmt('')
-  }
-
-  const handleCustomChange = (e) => {
-    setCustomAmt(e.target.value)
-    setSelectedAmt(null)
-  }
-
-  const getActiveAmount = () => {
-    if (customAmt) return parseFloat(customAmt) || 0
-    return selectedAmt
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setSubmitted(true)
+  const handleCopy = (text, key) => {
+    navigator.clipboard.writeText(text)
+    setCopiedText(key)
+    setTimeout(() => setCopiedText(''), 2000)
   }
 
   return (
@@ -58,237 +36,203 @@ export default function DonatePage() {
         ]}
       />
 
-      {/* ===== GIVING FORM SECTION ===== */}
       <section className="section bg-white text-navy">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            
-            {/* Securing Form */}
-            <motion.div className="lg:col-span-7 bg-slate-50 p-8 rounded-2xl border border-brand-border shadow-card" {...fadeUp}>
-              <h3 className="text-h3 text-navy mb-6 flex items-center gap-2">
-                <Gift className="w-6 h-6 text-primary-500" /> Secure Donation Terminal
-              </h3>
-              
-              {!submitted ? (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Select Amount */}
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <div className="section-label mb-3">Direct Bank Transfer</div>
+            <h2 className="text-h2">MUMSA Official Bank Accounts</h2>
+            <p className="text-body-large text-slate-500 mt-4">
+              Please use the official bank details below to process your local or international transfers. All funds are received directly under institutional governance audits.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Card 1: Local Naira Donations */}
+            <motion.div 
+              className="bg-slate-50 p-8 rounded-2xl border border-brand-border shadow-card flex flex-col justify-between relative overflow-hidden"
+              {...fadeUp}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-primary-100/30 rounded-full blur-2xl pointer-events-none" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center mb-6">
+                  <Landmark className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-navy mb-1">Local Naira Donations (NGN)</h3>
+                <p className="text-xs text-slate-500 mb-6 font-medium">For local transfers within Nigeria</p>
+
+                <div className="space-y-4">
+                  <div className="border-b border-slate-200 pb-3">
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Account Name</span>
+                    <span className="text-sm font-bold text-navy">MUMSA INITIATIVE LTD/GTE</span>
+                  </div>
+                  <div className="border-b border-slate-200 pb-3">
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Bank Name</span>
+                    <span className="text-sm font-bold text-navy">United Bank for Africa (UBA)</span>
+                  </div>
+                  <div className="border-b border-slate-200 pb-3">
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Account Number</span>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-lg font-extrabold text-primary-600 tracking-wider">1028378245</span>
+                      <button
+                        onClick={() => handleCopy('1028378245', 'local-acct')}
+                        className="px-2.5 py-1 rounded bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-navy transition-all flex items-center gap-1.5 text-2xs font-bold shadow-sm"
+                        title="Copy Account Number"
+                      >
+                        {copiedText === 'local-acct' ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-600">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
                   <div>
-                    <label className="form-label text-xs">Select Contribution Amount (NGN)</label>
-                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5 mb-3">
-                      {presetAmounts.map((amt) => (
-                        <button
-                          key={amt}
-                          type="button"
-                          onClick={() => handlePresetSelect(amt)}
-                          className={`py-2 px-3 text-xs font-bold rounded border transition-colors ${
-                            selectedAmt === amt
-                              ? 'bg-secondary-600 border-secondary-600 text-white'
-                              : 'bg-white border-brand-border text-navy hover:bg-slate-100'
-                          }`}
-                        >
-                          ₦{amt.toLocaleString()}
-                        </button>
-                      ))}
-                    </div>
-                    
-                    <input
-                      type="number"
-                      placeholder="Or enter custom amount in NGN..."
-                      value={customAmt}
-                      onChange={handleCustomChange}
-                      className="form-input text-xs"
-                      min="100"
-                    />
-                  </div>
-
-                  {/* Payment Method Select */}
-                  <div className="border-t border-brand-border pt-6">
-                    <label className="form-label text-xs">Choose Payment Pathway</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { id: 'card', label: 'Credit Card', icon: CreditCard },
-                        { id: 'bank', label: 'Bank Transfer', icon: Landmark },
-                        { id: 'intl', label: 'Mobile Money', icon: PhoneCall },
-                      ].map((item) => {
-                        const Icon = item.icon
-                        return (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => setMethod(item.id)}
-                            className={`p-3 text-2xs font-bold rounded border flex flex-col items-center justify-center gap-1.5 transition-colors ${
-                              method === item.id
-                                ? 'bg-secondary-600 border-secondary-600 text-white'
-                                : 'bg-white border-brand-border text-slate-gray hover:bg-slate-100'
-                            }`}
-                          >
-                            <Icon className="w-4 h-4" />
-                            {item.label}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Fields */}
-                  {method === 'card' && (
-                    <div className="space-y-4 border-t border-slate-200 pt-4">
-                      <div>
-                        <label className="form-label text-2xs">Donor Full Name</label>
-                        <input type="text" className="form-input text-xs" required placeholder="Amina Bello" />
-                      </div>
-                      <div>
-                        <label className="form-label text-2xs">Email Address (for Receipt)</label>
-                        <input type="email" className="form-input text-xs" required placeholder="amina@example.com" />
-                      </div>
-                      <div className="bg-slate-100/50 p-4 rounded border border-brand-border text-2xs text-slate-gray flex items-start gap-2.5">
-                        <ShieldAlert className="w-4 h-4 text-secondary-600 flex-shrink-0" />
-                        <span>Future Payment gateway (Paystack / Flutterwave integration placeholder). Secure SSL verification is configured in sandbox.</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {method === 'bank' && (
-                    <div className="space-y-4 border-t border-slate-200 pt-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Local NGN Donations */}
-                        <div className="bg-white p-5 rounded-lg border border-brand-border space-y-3">
-                          <p className="text-[10px] text-secondary-600 uppercase tracking-wider font-extrabold">Donate in Nigerian Naira (NGN)</p>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Account Name</span>
-                            <span className="text-xs font-bold text-navy">MUMSA INITIATIVE LTD/GTE</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Bank Name</span>
-                            <span className="text-xs font-bold text-navy">United Bank for Africa (UBA)</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Account Number</span>
-                            <span className="text-sm font-extrabold text-primary-600">1028378245</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Currency</span>
-                            <span className="text-xs font-bold text-navy">Nigerian Naira (NGN)</span>
-                          </div>
-                        </div>
-
-                        {/* International USD/Foreign Donations */}
-                        <div className="bg-white p-5 rounded-lg border border-brand-border space-y-3">
-                          <p className="text-[10px] text-secondary-600 uppercase tracking-wider font-extrabold">International Donations (USD, EUR, GBP, etc.)</p>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Account Name</span>
-                            <span className="text-xs font-bold text-navy">MUMSA INITIATIVE LTD/GTE</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Bank Name</span>
-                            <span className="text-xs font-bold text-navy">United Bank for Africa (UBA)</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Domiciliary Account Number</span>
-                            <span className="text-sm font-extrabold text-primary-600">3004850785</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">SWIFT/BIC Code</span>
-                            <span className="text-xs font-bold text-navy font-mono">UNAFNGLAXXX</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-400 text-[10px] block">Bank Head Office Address</span>
-                            <span className="text-[10px] text-slate-600 leading-relaxed block font-medium">
-                              United Bank for Africa (UBA)<br />
-                              UBA House, Floor 8<br />
-                              57 Marina, Lagos Island<br />
-                              Lagos, Nigeria
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {method === 'intl' && (
-                    <div className="space-y-4 border-t border-slate-200 pt-4">
-                      <div className="bg-white p-6 rounded-lg border border-brand-border text-center space-y-2">
-                        <p className="text-2xs font-bold text-navy">Mobile Money Transfers</p>
-                        <p className="text-xs text-slate-gray">Please call our operations desk directly to process mobile money donations:</p>
-                        <p className="text-sm font-bold text-secondary-600">+234 906 131 3202</p>
-                      </div>
-                    </div>
-                  )}
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary btn-lg w-full flex items-center justify-center gap-2"
-                  >
-                    Authorize Donation of ₦{getActiveAmount().toLocaleString()}
-                  </button>
-                </form>
-              ) : (
-                <div className="text-center py-10">
-                  <div className="w-16 h-16 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-h4 text-navy mb-2">Secure Transfer Initialized</h3>
-                  <p className="text-xs text-slate-gray max-w-sm mx-auto mb-6">
-                    Thank you! A secure mock transfer has been logged. In the live platform, this connects dynamically to Flutterwave/Paystack checkout scripts.
-                  </p>
-                  <button onClick={() => setSubmitted(false)} className="btn btn-outline btn-sm">
-                    Back to Terminal
-                  </button>
-                </div>
-              )}
-            </motion.div>
-
-            {/* Sidebar Impact Context */}
-            <motion.div className="lg:col-span-5 space-y-6" {...fadeUp}>
-              <div className="bg-slate-50 p-6 rounded-xl border border-brand-border">
-                <h4 className="text-xs font-bold text-navy uppercase tracking-wider mb-4 flex items-center gap-1.5">
-                  <Users className="w-4 h-4 text-primary-500" /> Sponsoring Modalities
-                </h4>
-                
-                <div className="space-y-4 text-2xs">
-                  <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded bg-secondary-100 text-secondary-600 flex items-center justify-center font-bold flex-shrink-0">1</div>
-                    <div>
-                      <p className="font-bold text-navy">One-Time Giving</p>
-                      <p className="text-slate-gray mt-0.5">Flexible funds to support immediate medical outreaches or materials purchase.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded bg-secondary-100 text-secondary-600 flex items-center justify-center font-bold flex-shrink-0">2</div>
-                    <div>
-                      <p className="font-bold text-navy">Monthly Sustaining Partner</p>
-                      <p className="text-slate-gray mt-0.5">Provides predictive monthly budgeting for school reintegration campaigns.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded bg-secondary-100 text-secondary-600 flex items-center justify-center font-bold flex-shrink-0">3</div>
-                    <div>
-                      <p className="font-bold text-navy">Sponsor a Child</p>
-                      <p className="text-slate-gray mt-0.5">Directly pays tuition fees and academic materials for vulnerable out-of-school children.</p>
-                    </div>
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Currency</span>
+                    <span className="text-sm font-bold text-navy">Nigerian Naira (NGN)</span>
                   </div>
                 </div>
               </div>
+            </motion.div>
 
-              {/* Impact Indicators */}
-              <div className="bg-slate-50 p-6 rounded-xl border border-brand-border space-y-4">
-                <h4 className="text-xs font-bold text-navy uppercase tracking-wider mb-2">What Your Gift Achieves</h4>
-                
-                {[
-                  { amt: '₦5,000', text: 'Provides school supplies (bag, writing tools) for one child for a full term.' },
-                  { amt: '₦25,000', text: 'Funds one month of practical TVET classes for a young person.' },
-                  { amt: '₦100,000', text: 'Sponsors a complete medical outreach desk providing hearing/health exams.' }
-                ].map((item) => (
-                  <div key={item.amt} className="border-b border-slate-200 pb-3 last:border-0 last:pb-0">
-                    <span className="text-xs font-bold text-primary-600 block">{item.amt}</span>
-                    <span className="text-2xs text-slate-gray leading-relaxed mt-0.5 block">{item.text}</span>
+            {/* Card 2: International USD/Foreign Donations */}
+            <motion.div 
+              className="bg-slate-50 p-8 rounded-2xl border border-brand-border shadow-card flex flex-col justify-between relative overflow-hidden"
+              {...fadeUp}
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-secondary-100/30 rounded-full blur-2xl pointer-events-none" />
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-secondary-100 text-secondary-600 flex items-center justify-center mb-6">
+                  <Globe className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-navy mb-1">International Donations (USD, EUR, GBP)</h3>
+                <p className="text-xs text-slate-500 mb-6 font-medium">For domiciliary transfers and foreign currencies</p>
+
+                <div className="space-y-4">
+                  <div className="border-b border-slate-200 pb-3">
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Account Name</span>
+                    <span className="text-sm font-bold text-navy">MUMSA INITIATIVE LTD/GTE</span>
                   </div>
-                ))}
+                  <div className="border-b border-slate-200 pb-3">
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Bank Name</span>
+                    <span className="text-sm font-bold text-navy">United Bank for Africa (UBA)</span>
+                  </div>
+                  <div className="border-b border-slate-200 pb-3">
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Domiciliary Account Number</span>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-lg font-extrabold text-primary-600 tracking-wider">3004850785</span>
+                      <button
+                        onClick={() => handleCopy('3004850785', 'intl-acct')}
+                        className="px-2.5 py-1 rounded bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-navy transition-all flex items-center gap-1.5 text-2xs font-bold shadow-sm"
+                        title="Copy Account Number"
+                      >
+                        {copiedText === 'intl-acct' ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-600">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="border-b border-slate-200 pb-3">
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">SWIFT/BIC Code</span>
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-sm font-bold text-navy font-mono">UNAFNGLAXXX</span>
+                      <button
+                        onClick={() => handleCopy('UNAFNGLAXXX', 'swift')}
+                        className="px-2.5 py-1 rounded bg-white hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-navy transition-all flex items-center gap-1.5 text-2xs font-bold shadow-sm"
+                        title="Copy SWIFT Code"
+                      >
+                        {copiedText === 'swift' ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-600">Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 text-2xs block uppercase tracking-wider">Bank Head Office Address</span>
+                    <span className="text-xs font-semibold text-slate-700 leading-relaxed block mt-1">
+                      United Bank for Africa (UBA)<br />
+                      UBA House, Floor 8<br />
+                      57 Marina, Lagos Island, Lagos, Nigeria
+                    </span>
+                  </div>
+                </div>
               </div>
             </motion.div>
+          </div>
+
+          {/* Sponsoring Modalities and What Your Gift Achieves */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-16 pt-12 border-t border-slate-100">
+            {/* Left: Modalities */}
+            <div className="bg-slate-50 p-8 rounded-xl border border-brand-border">
+              <h4 className="text-sm font-bold text-navy uppercase tracking-wider mb-6 flex items-center gap-1.5">
+                <Users className="w-5 h-5 text-primary-500" /> Sponsoring Modalities
+              </h4>
+              
+              <div className="space-y-6 text-xs leading-relaxed">
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded bg-secondary-100 text-secondary-600 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                  <div>
+                    <p className="font-bold text-navy text-sm">One-Time Giving</p>
+                    <p className="text-slate-500 mt-1">Flexible funds to support immediate medical outreaches or school materials purchase.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded bg-secondary-100 text-secondary-600 flex items-center justify-center font-bold flex-shrink-0">2</div>
+                  <div>
+                    <p className="font-bold text-navy text-sm">Monthly Sustaining Partner</p>
+                    <p className="text-slate-500 mt-1">Provides predictive monthly budgeting for school reintegration campaigns.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-8 h-8 rounded bg-secondary-100 text-secondary-600 flex items-center justify-center font-bold flex-shrink-0">3</div>
+                  <div>
+                    <p className="font-bold text-navy text-sm">Sponsor a Child</p>
+                    <p className="text-slate-500 mt-1">Directly pays tuition fees and academic materials for vulnerable out-of-school children.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: What Gift Achieves */}
+            <div className="bg-slate-50 p-8 rounded-xl border border-brand-border space-y-6">
+              <h4 className="text-sm font-bold text-navy uppercase tracking-wider mb-2">What Your Gift Achieves</h4>
+              
+              {[
+                { amt: '₦5,000', text: 'Provides school supplies (bag, writing tools) for one child for a full term.' },
+                { amt: '₦25,000', text: 'Funds one month of practical TVET classes for a young person.' },
+                { amt: '₦100,000', text: 'Sponsors a complete medical outreach desk providing hearing/health exams.' }
+              ].map((item) => (
+                <div key={item.amt} className="border-b border-slate-200 pb-4 last:border-0 last:pb-0">
+                  <span className="text-sm font-bold text-primary-600 block">{item.amt}</span>
+                  <span className="text-xs text-slate-500 leading-relaxed mt-1 block">{item.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
     </>
   )
 }
+
