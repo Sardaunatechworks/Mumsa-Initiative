@@ -9,7 +9,11 @@ DELETE FROM news WHERE slug IN (
   'new-year-2026-impact-hope',
   'world-cancer-day-2026-campaign',
   'zero-tolerance-female-genital-mutilation-2026',
-  'ramadan-kareem-2026-message'
+  'ramadan-kareem-2026-message',
+  'birthday-fatima-muftau-2026',
+  'world-ngo-day-2026',
+  'democracy-day-2026',
+  'inclusive-governance-ambassadors-project-2026'
 );
 
 -- Seed Events
@@ -60,6 +64,54 @@ INSERT INTO news (id, title, slug, type, excerpt, content, published_at, cover_u
     '2026-03-10T18:00:00Z',
     '/events/ramadan_kareem_2026.jpg',
     'Ningi LG, Bauchi State',
+    true
+  ),
+  (
+    'c0e1f1a1-b1c1-4123-8123-555555555555',
+    'Birthday Celebration: Fatima Muftau (MERL Officer)',
+    'birthday-fatima-muftau-2026',
+    'Event',
+    'Wishing a very happy birthday to our Monitoring, Evaluation, Research & Learning (MERL) Officer, Fatima Muftau!',
+    'MUMSA Initiative celebrates our dedicated MERL Officer, Fatima Muftau. We wish her joy, good health, and continued success in all her endeavors. May the year ahead bring new achievements, happiness, and impact. Thank you for your leadership in guiding our data-driven community interventions.',
+    '2026-02-15T09:00:00Z',
+    '/events/birthday_fatima.jpg',
+    'MUMSA Initiative Headquarters',
+    true
+  ),
+  (
+    'c0e1f1a1-b1c1-4123-8123-666666666666',
+    'World NGO Day 2026 Commemoration',
+    'world-ngo-day-2026',
+    'Event',
+    'On World NGO Day, we stand committed to transforming lives, strengthening communities, and creating lasting impact.',
+    'MUMSA Initiative joins global civil society in celebrating World NGO Day. We reaffirm our commitment to empowering vulnerable populations, promoting social inclusion, and implementing community-led solutions to development challenges across Nigeria.',
+    '2026-02-27T10:00:00Z',
+    '/events/world_ngo_day_2026.jpg',
+    'Ningi LGA, Bauchi State',
+    true
+  ),
+  (
+    'c0e1f1a1-b1c1-4123-8123-777777777777',
+    'Democracy Day 2026: Knowledge & Skills for Future-Shaping',
+    'democracy-day-2026',
+    'Event',
+    'Democracy is more than voting, it is empowering people with knowledge, skills, and opportunities to shape their own future.',
+    'On Democracy Day, MUMSA Initiative celebrates the power of active citizenship. We believe that true democratic development starts with education, youth economic empowerment, and accessible platforms where every community member has a voice.',
+    '2026-06-12T08:00:00Z',
+    '/events/democracy_day_2026.jpg',
+    'Bauchi State, Nigeria',
+    true
+  ),
+  (
+    'c0e1f1a1-b1c1-4123-8123-888888888888',
+    'Inclusive Governance Ambassadors Project Training',
+    'inclusive-governance-ambassadors-project-2026',
+    'Event',
+    'Spotlight for Transparency and Accountability Initiative in partnership with MUMSA Initiative presents inclusive governance training for young women and PWDs.',
+    'Join us for the Inclusive Governance Ambassadors Project: Training Young Women & People with Disabilities (PWDs) as Civic Engagement Champions in Ningi L.G.A., Bauchi State. Supported by the Nigeria Youth Futures Fund, this workshop aims to build civic capacity and promote transparent governance participation.',
+    '2026-04-26T10:00:00Z',
+    '/events/inclusive_governance_training.jpg',
+    'Sen. Bala Muhammad Hall, Ningi LGA',
     true
   )
 ON CONFLICT (id) DO NOTHING;
