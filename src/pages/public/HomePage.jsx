@@ -72,146 +72,47 @@ export default function HomePage() {
         </div>
 
         <div className="container relative z-10 pt-32 pb-20 flex flex-col justify-between min-h-[calc(100vh-80px)]">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mt-auto w-full">
-            {/* Left Column (Content) */}
-            <div className="lg:col-span-7 flex flex-col items-start text-left">
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-brand-border text-xs font-semibold uppercase tracking-wider text-secondary-600 mb-6"
-              >
-                Youth-led Nonprofit Organization Founded in 2020
-              </motion.div>
+          <div className="max-w-5xl mt-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-brand-border text-xs font-semibold uppercase tracking-wider text-secondary-600 mb-6"
+            >
+              Youth-led Nonprofit Organization Founded in 2020
+            </motion.div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                className="text-display text-navy mb-8"
-              >
-                Building <span className="text-primary-600">Inclusive Communities</span> Through Innovation and Livelihoods
-              </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-display text-navy mb-8"
+            >
+              Building <span className="text-primary-600">Inclusive Communities</span> Through Innovation and Livelihoods
+            </motion.h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-body-large text-slate-gray max-w-2xl mb-12 leading-relaxed"
-              >
-                We empower women, youth, children, and underserved populations through inclusive education, vocational TVET skills, healthcare, climate action, and digital transformation.
-              </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-body-large text-slate-gray max-w-3xl mb-12 leading-relaxed"
+            >
+              We empower women, youth, children, and underserved populations through inclusive education, vocational TVET skills, healthcare, climate action, and digital transformation.
+            </motion.p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="flex flex-wrap gap-4"
-              >
-                <Link to="/about" className="btn btn-primary btn-lg">
-                  Explore Our Model <ArrowRight className="w-5 h-5 text-navy" />
-                </Link>
-                <Link to="/donate" className="btn btn-secondary btn-lg">
-                  Support Our Mission <Heart className="w-5 h-5 text-white" />
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* Right Column (Floating Images Collage) */}
-            <div className="lg:col-span-5 relative h-[450px] lg:h-[500px] w-full flex items-center justify-center">
-              {/* Decorative background circle */}
-              <div className="absolute w-72 h-72 rounded-full bg-primary-100/30 blur-2xl z-0" />
-
-              {/* Image 1: Main central floating photo (podium presentation) */}
-              <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{
-                  opacity: 1,
-                  y: [0, -15, 0],
-                  scale: 1
-                }}
-                transition={{
-                  initial: { duration: 0.8 },
-                  y: { repeat: Infinity, duration: 6, ease: "easeInOut" }
-                }}
-                className="absolute w-64 h-80 rounded-2xl overflow-hidden shadow-2xl border-4 border-white z-25 bg-slate-100"
-                style={{ top: '5%', left: '15%' }}
-              >
-                <img
-                  src="/gallery/media__1781537960641.jpg"
-                  alt="MUMSA Podium Presentation"
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-
-              {/* Image 2: Secondary overlapping photo (team working) */}
-              <motion.div
-                initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                animate={{
-                  opacity: 1,
-                  y: [0, 12, 0],
-                  scale: 1
-                }}
-                transition={{
-                  initial: { duration: 0.8, delay: 0.2 },
-                  y: { repeat: Infinity, duration: 5, ease: "easeInOut" }
-                }}
-                className="absolute w-48 h-60 rounded-2xl overflow-hidden shadow-xl border-4 border-white z-20 bg-slate-100"
-                style={{ bottom: '8%', right: '8%' }}
-              >
-                <img
-                  src="/gallery/media__1781537960714.jpg"
-                  alt="MUMSA Team working on laptops"
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-
-              {/* Image 3: Small badge overlay photo (collaborative session) */}
-              <motion.div
-                initial={{ opacity: 0, x: -20, scale: 0.8 }}
-                animate={{
-                  opacity: 1,
-                  x: [0, -8, 0],
-                  y: [0, 8, 0],
-                  scale: 1
-                }}
-                transition={{
-                  initial: { duration: 0.8, delay: 0.4 },
-                  x: { repeat: Infinity, duration: 7, ease: "easeInOut" },
-                  y: { repeat: Infinity, duration: 7, ease: "easeInOut" }
-                }}
-                className="absolute w-36 h-48 rounded-xl overflow-hidden shadow-lg border-2 border-white z-30 bg-slate-100"
-                style={{ bottom: '5%', left: '5%' }}
-              >
-                <img
-                  src="/gallery/media__1781537960679.jpg"
-                  alt="Collaborative session"
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-
-              {/* Decorative metric badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{
-                  opacity: 1,
-                  y: [0, -10, 0],
-                  scale: 1
-                }}
-                transition={{
-                  initial: { duration: 0.8, delay: 0.6 },
-                  y: { repeat: Infinity, duration: 4, ease: "easeInOut" }
-                }}
-                className="absolute bg-white/90 backdrop-blur-sm border border-brand-border py-2.5 px-4 rounded-xl shadow-lg z-35 flex items-center gap-2.5"
-                style={{ top: '10%', right: '12%' }}
-              >
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <div>
-                  <p className="text-2xs font-extrabold uppercase tracking-wider text-slate-400"></p>
-                  <p className="text-xs font-bold text-navy"></p>
-                </div>
-              </motion.div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="flex flex-wrap gap-4"
+            >
+              <Link to="/about" className="btn btn-primary btn-lg">
+                Explore Our Model <ArrowRight className="w-5 h-5 text-navy" />
+              </Link>
+              <Link to="/donate" className="btn btn-secondary btn-lg">
+                Support Our Mission <Heart className="w-5 h-5 text-white" />
+              </Link>
+            </motion.div>
           </div>
 
           {/* Hero Integrated Metrics */}
@@ -219,7 +120,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-brand-border pt-12 mt-16 w-full"
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-brand-border pt-12 mt-16"
           >
             <div>
               <p className="text-4xl lg:text-5xl font-extrabold text-primary-600">35,000+</p>
@@ -366,8 +267,8 @@ export default function HomePage() {
                     key={exp.title}
                     onClick={() => setActiveExpertise(idx)}
                     className={`w-full text-left p-4 rounded border transition-all flex items-center justify-between group ${activeExpertise === idx
-                      ? 'bg-secondary-50 border-secondary-600 text-secondary-600 font-bold'
-                      : 'bg-white border-brand-border text-slate-gray hover:bg-slate-50 hover:border-black'
+                        ? 'bg-secondary-50 border-secondary-600 text-secondary-600 font-bold'
+                        : 'bg-white border-brand-border text-slate-gray hover:bg-slate-50 hover:border-black'
                       }`}
                   >
                     <span className="text-sm font-semibold">{exp.title}</span>
