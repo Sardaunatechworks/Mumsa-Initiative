@@ -121,25 +121,25 @@ export default function HomePage() {
             <div className="lg:col-span-5 relative h-[450px] lg:h-[500px] w-full flex items-center justify-center">
               {/* Decorative background circle */}
               <div className="absolute w-72 h-72 rounded-full bg-primary-100/30 blur-2xl z-0" />
-              
+
               {/* Image 1: Main central floating photo (podium presentation) */}
               <motion.div
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: [0, -15, 0], 
-                  scale: 1 
+                animate={{
+                  opacity: 1,
+                  y: [0, -15, 0],
+                  scale: 1
                 }}
-                transition={{ 
+                transition={{
                   initial: { duration: 0.8 },
                   y: { repeat: Infinity, duration: 6, ease: "easeInOut" }
                 }}
                 className="absolute w-64 h-80 rounded-2xl overflow-hidden shadow-2xl border-4 border-white z-25 bg-slate-100"
                 style={{ top: '5%', left: '15%' }}
               >
-                <img 
-                  src="/gallery/media__1781537960641.jpg" 
-                  alt="MUMSA Podium Presentation" 
+                <img
+                  src="/gallery/media__1781537960641.jpg"
+                  alt="MUMSA Podium Presentation"
                   className="w-full h-full object-cover"
                 />
               </motion.div>
@@ -147,21 +147,21 @@ export default function HomePage() {
               {/* Image 2: Secondary overlapping photo (team working) */}
               <motion.div
                 initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: [0, 12, 0], 
-                  scale: 1 
+                animate={{
+                  opacity: 1,
+                  y: [0, 12, 0],
+                  scale: 1
                 }}
-                transition={{ 
+                transition={{
                   initial: { duration: 0.8, delay: 0.2 },
                   y: { repeat: Infinity, duration: 5, ease: "easeInOut" }
                 }}
                 className="absolute w-48 h-60 rounded-2xl overflow-hidden shadow-xl border-4 border-white z-20 bg-slate-100"
                 style={{ bottom: '8%', right: '8%' }}
               >
-                <img 
-                  src="/gallery/media__1781537960714.jpg" 
-                  alt="MUMSA Team working on laptops" 
+                <img
+                  src="/gallery/media__1781537960714.jpg"
+                  alt="MUMSA Team working on laptops"
                   className="w-full h-full object-cover"
                 />
               </motion.div>
@@ -169,13 +169,13 @@ export default function HomePage() {
               {/* Image 3: Small badge overlay photo (collaborative session) */}
               <motion.div
                 initial={{ opacity: 0, x: -20, scale: 0.8 }}
-                animate={{ 
-                  opacity: 1, 
-                  x: [0, -8, 0], 
+                animate={{
+                  opacity: 1,
+                  x: [0, -8, 0],
                   y: [0, 8, 0],
-                  scale: 1 
+                  scale: 1
                 }}
-                transition={{ 
+                transition={{
                   initial: { duration: 0.8, delay: 0.4 },
                   x: { repeat: Infinity, duration: 7, ease: "easeInOut" },
                   y: { repeat: Infinity, duration: 7, ease: "easeInOut" }
@@ -183,9 +183,9 @@ export default function HomePage() {
                 className="absolute w-36 h-48 rounded-xl overflow-hidden shadow-lg border-2 border-white z-30 bg-slate-100"
                 style={{ bottom: '5%', left: '5%' }}
               >
-                <img 
-                  src="/gallery/media__1781537960679.jpg" 
-                  alt="Collaborative session" 
+                <img
+                  src="/gallery/media__1781537960679.jpg"
+                  alt="Collaborative session"
                   className="w-full h-full object-cover"
                 />
               </motion.div>
@@ -193,12 +193,12 @@ export default function HomePage() {
               {/* Decorative metric badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ 
+                animate={{
                   opacity: 1,
                   y: [0, -10, 0],
-                  scale: 1 
+                  scale: 1
                 }}
-                transition={{ 
+                transition={{
                   initial: { duration: 0.8, delay: 0.6 },
                   y: { repeat: Infinity, duration: 4, ease: "easeInOut" }
                 }}
@@ -207,8 +207,8 @@ export default function HomePage() {
               >
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <div>
-                  <p className="text-2xs font-extrabold uppercase tracking-wider text-slate-400">TVET & Tech</p>
-                  <p className="text-xs font-bold text-navy">100% Youth-Led</p>
+                  <p className="text-2xs font-extrabold uppercase tracking-wider text-slate-400"></p>
+                  <p className="text-xs font-bold text-navy"></p>
                 </div>
               </motion.div>
             </div>
@@ -366,8 +366,8 @@ export default function HomePage() {
                     key={exp.title}
                     onClick={() => setActiveExpertise(idx)}
                     className={`w-full text-left p-4 rounded border transition-all flex items-center justify-between group ${activeExpertise === idx
-                        ? 'bg-secondary-50 border-secondary-600 text-secondary-600 font-bold'
-                        : 'bg-white border-brand-border text-slate-gray hover:bg-slate-50 hover:border-black'
+                      ? 'bg-secondary-50 border-secondary-600 text-secondary-600 font-bold'
+                      : 'bg-white border-brand-border text-slate-gray hover:bg-slate-50 hover:border-black'
                       }`}
                   >
                     <span className="text-sm font-semibold">{exp.title}</span>
