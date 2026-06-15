@@ -50,12 +50,33 @@ export default function AdminCRUD({ table, columns, formFields, title, orderBy =
   }, [fetchRows])
 
   const openCreate = () => { setEditing(null); setForm(emptyForm); setError(null); setModal(true) }
-  const openEdit   = (row) => { setEditing(row); setForm({ ...row }); setError(null); setModal(true) }
+  const openEdit   = (row) => { 
+    const formatted = { ...row }
+    Object.keys(formatted).forEach((key) => {
+      if (Array.isArray(formatted[key])) {
+        formatted[key] = formatted[key].join(', ')
+      }
+    })
+    setEditing(row); 
+    setForm(formatted); 
+    setError(null); 
+    setModal(true) 
+  }
 
   const handleSave = async () => {
     setSaving(true)
     setError(null)
     const payload = { ...form, updated_at: new Date().toISOString() }
+
+    // Parse array fields (like subprograms) if they are strings
+    Object.keys(payload).forEach((key) => {
+      if (key === 'subprograms' && typeof payload[key] === 'string') {
+        payload[key] = payload[key]
+          .split(',')
+          .map((item) => item.trim())
+          .filter(Boolean)
+      }
+    })
 
     // Auto-derive name if table is partners and name is missing
     if (table === 'partners' && !payload.name) {

@@ -145,10 +145,171 @@ export default function PartnershipsPage() {
                 )}
               </div>
             ))}
-
           </div>
 
-          <div className="bg-slate-50 rounded-2xl p-8 text-center border border-slate-100">
+          {/* Strategic Recognitions & Affiliations */}
+          <div className="mt-20">
+            <SectionHeader 
+              label="Accreditations & Honors" 
+              title="Strategic Recognitions & Affiliations" 
+              subtitle="MUMSA Initiative is recognized and affiliated with prominent national and international development platforms."
+              className="mb-10"
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  title: 'Provisional Observer Organization Status',
+                  desc: 'Granted observer status with the United Nations Convention to Combat Desertification (UNCCD).',
+                  org: 'UNCCD',
+                  color: 'card-green-top'
+                },
+                {
+                  title: 'Verified Host Organization',
+                  desc: 'Verified under the Nigeria Jubilee Fellows Programme (NJFP) implemented by the UNDP and the Federal Government of Nigeria.',
+                  org: 'UNDP & FGN',
+                  color: 'card-blue-top'
+                },
+                {
+                  title: 'World Hearing Day Small Grant Recipient',
+                  desc: 'Recipient of hearing health advocacy and action funding supported through WHO-related initiatives.',
+                  org: 'World Health Organization',
+                  color: 'card-black-top'
+                },
+                {
+                  title: 'YouthADAPT Climate Innovation Finalist',
+                  desc: 'Recognized for pioneering local adaptation solutions integrating renewable energy and community access.',
+                  org: 'Global Center on Adaptation',
+                  color: 'card-green-top'
+                },
+                {
+                  title: 'G20 Global Land Initiative Restoration Return Grant Finalist',
+                  desc: 'Selected as a finalist for drought resilience, community land restoration, and environmental ecosystem works.',
+                  org: 'G20 Land Initiative',
+                  color: 'card-blue-top'
+                },
+                {
+                  title: 'NiYA Start-Up Grant Award Recipient',
+                  desc: 'Awarded for youth leadership, enterprise incubation, and technical employment development models.',
+                  org: 'Federal Ministry of Youth',
+                  color: 'card-black-top'
+                }
+              ].map((item) => (
+                <div key={item.title} className={cn("card p-6 flex flex-col justify-between bg-slate-50 border border-slate-200/60 shadow-sm hover:shadow-md transition-all", item.color)}>
+                  <div>
+                    <span className="text-2xs font-extrabold uppercase tracking-wider text-primary-600 bg-primary-50 px-2.5 py-1 rounded-full inline-block mb-3">
+                      {item.org}
+                    </span>
+                    <h3 className="font-bold text-navy text-sm leading-snug mb-2">{item.title}</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed font-medium">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Collaborator Ecosystem */}
+          <div className="mt-20">
+            <SectionHeader 
+              label="Ecosystem" 
+              title="Supporters & Collaborators Across Sectors" 
+              subtitle="Our work is made possible through the collaboration of dedicated institutions, networks, and communities."
+              className="mb-10"
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+              {/* Column 1: International & Government */}
+              <div className="space-y-6">
+                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200/50">
+                  <h3 className="font-extrabold text-navy text-xs uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">
+                    International & Development
+                  </h3>
+                  <ul className="space-y-2 text-xs font-semibold text-slate-600">
+                    <li>• United Nations Convention to Combat Desertification (UNCCD)</li>
+                    <li>• World Health Organization (WHO)</li>
+                    <li>• International Human Rights Commission</li>
+                    <li>• Open Knowledge Foundation</li>
+                    <li>• Global Center on Adaptation</li>
+                    <li>• G20 Global Land Initiative</li>
+                    <li>• European Union</li>
+                  </ul>
+                </div>
+
+                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200/50">
+                  <h3 className="font-extrabold text-navy text-xs uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">
+                    Government Institutions
+                  </h3>
+                  <ul className="space-y-2 text-xs font-semibold text-slate-600">
+                    <li>• Federal Ministry of Education</li>
+                    <li>• National Board for Technical Education</li>
+                    <li>• Federal Government of Nigeria</li>
+                    <li>• Nigeria Jubilee Fellows Programme (NJFP)</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Column 2: Academic & Private Sector */}
+              <div className="space-y-6">
+                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200/50">
+                  <h3 className="font-extrabold text-navy text-xs uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">
+                    Academic & Training
+                  </h3>
+                  <ul className="space-y-2 text-xs font-semibold text-slate-600">
+                    <li>• Bill and Melinda Gates College of Health Technology</li>
+                    <li>• Psychosocial Rehabilitation Dept, BMG College</li>
+                    <li>• Secondary Schools across Bauchi State</li>
+                    <li>• Community Learning Centres</li>
+                    <li>• Technical & Vocational Training Centres</li>
+                  </ul>
+                </div>
+
+                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200/50">
+                  <h3 className="font-extrabold text-navy text-xs uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">
+                    Private Sector & Employability
+                  </h3>
+                  <ul className="space-y-2 text-xs font-semibold text-slate-600">
+                    <li>• Host Companies under FLFP Fellowship</li>
+                    <li>• Small and Medium Enterprises (SMEs)</li>
+                    <li>• Entrepreneurship and Innovation Hubs</li>
+                    <li>• Industry Mentors and Trainers</li>
+                    <li>• Internship Placement Partners</li>
+                    <li>• Renewable Energy & Solar Industry Partners</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Column 3: Civil Society & Grassroots */}
+              <div className="space-y-6">
+                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200/50">
+                  <h3 className="font-extrabold text-navy text-xs uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">
+                    Civil Society & Nonprofits
+                  </h3>
+                  <ul className="space-y-2 text-xs font-semibold text-slate-600">
+                    <li>• TEDA Foundation</li>
+                    <li>• Jobberman PLC</li>
+                    <li>• BudgIT Foundation</li>
+                    <li>• World Youth Movement of the IHRC</li>
+                  </ul>
+                </div>
+
+                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200/50">
+                  <h3 className="font-extrabold text-navy text-xs uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">
+                    Community & Grassroots
+                  </h3>
+                  <ul className="space-y-2 text-xs font-semibold text-slate-600">
+                    <li>• Traditional & Community Leaders</li>
+                    <li>• Religious Leaders & Groups</li>
+                    <li>• Parent Associations</li>
+                    <li>• School Management Committees</li>
+                    <li>• Youth & Women Groups</li>
+                    <li>• Community Development Associations (CDAs)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 rounded-2xl p-8 text-center border border-slate-100 mt-16">
             <p className="text-slate-500 text-sm mb-6 max-w-xl mx-auto">
               We are always open to new partnerships that align with our mission to empower communities and advance sustainable development. If your organization shares our vision, we would love to connect.
             </p>

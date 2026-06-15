@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, BookOpen, HeartPulse, TrendingUp, Star, Shield, Leaf } from 'lucide-react'
+import { ArrowRight, BookOpen, HeartPulse, TrendingUp, Star, Shield, Leaf, GraduationCap, Globe, Award } from 'lucide-react'
 import { SEOHead, SectionHeader, PageHero } from '@components/ui'
 import { cn } from '@lib/utils'
 import { supabase } from '@lib/supabase'
 
-const ICON_MAP = { BookOpen, HeartPulse, TrendingUp, Star, Shield, Leaf }
+const ICON_MAP = { BookOpen, HeartPulse, TrendingUp, Star, Shield, Leaf, GraduationCap, Globe, Award }
 
 export default function ProgramsPage() {
   const [programs, setPrograms] = useState([])
