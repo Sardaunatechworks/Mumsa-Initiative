@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { SEOHead, PageHero, SectionHeader } from '@components/ui'
 import { ArrowRight } from 'lucide-react'
 import { supabase } from '@lib/supabase'
+import { cn } from '@lib/utils'
 
 const FALLBACK_PARTNERS = [
   {
