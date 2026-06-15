@@ -66,7 +66,10 @@ export default function AdminCRUD({ table, columns, formFields, title, orderBy =
   const handleSave = async () => {
     setSaving(true)
     setError(null)
-    const payload = { ...form, updated_at: new Date().toISOString() }
+    const payload = { ...form }
+    if (table !== 'gallery') {
+      payload.updated_at = new Date().toISOString()
+    }
 
     // Parse array fields (like subprograms) if they are strings
     Object.keys(payload).forEach((key) => {
